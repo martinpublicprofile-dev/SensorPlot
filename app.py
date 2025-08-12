@@ -527,11 +527,11 @@ def main():
             # Time of day selection for averages calculation
             st.markdown('<span style="color: #888888; font-size: 14px; font-weight: bold;">Time of Day Range for Averages</span>', unsafe_allow_html=True)
             
-            # Style the time selector slider
+            # Style the time selector slider and hide default labels
             st.markdown("""
             <style>
             /* Style the time selector slider handles with different color */
-            div[data-testid="stSlider"]:has(+ div:contains("Select time of day range for average calculation")) > div[data-baseweb="slider"] > div > div > div[role="slider"] {
+            .stSlider:last-of-type > div[data-baseweb="slider"] > div > div > div[role="slider"] {
                 width: 20px !important;
                 height: 20px !important;
                 background-color: #99CCFF !important;
@@ -541,66 +541,27 @@ def main():
             }
             
             /* Style the time selector slider track */
-            div[data-testid="stSlider"]:has(+ div:contains("Select time of day range for average calculation")) > div[data-baseweb="slider"] > div > div {
+            .stSlider:last-of-type > div[data-baseweb="slider"] > div > div {
                 background-color: #99CCFF !important;
                 height: 4px !important;
+            }
+            
+            /* Hide default slider labels for time slider */
+            .stSlider:last-of-type > div[data-baseweb="slider"] > div > div > div > div {
+                display: none !important;
             }
             </style>
             """, unsafe_allow_html=True)
             
             # Time of day range slider (in 15-minute intervals: 0 = 00:00, 95 = 23:45)
             time_of_day_range = st.slider(
-                "Select time of day range for average calculation:",
+                "Time range:",
                 min_value=0,
                 max_value=95,
                 value=(0, 95),
                 step=1,
-                format="%d"
+                label_visibility="collapsed"
             )
-            
-            # Add JavaScript to format slider labels as HH:MM
-            st.markdown(f"""
-            <script>
-            function formatTimeSliderLabels() {{
-                // Find the time slider (second slider on page)
-                const sliders = document.querySelectorAll('[data-baseweb="slider"]');
-                if (sliders.length >= 2) {{
-                    const timeSlider = sliders[1]; // Second slider
-                    const thumbs = timeSlider.querySelectorAll('[role="slider"]');
-                    
-                    thumbs.forEach(thumb => {{
-                        const value = parseInt(thumb.getAttribute('aria-valuenow'));
-                        if (!isNaN(value)) {{
-                            const hours = Math.floor(value / 4);
-                            const minutes = (value % 4) * 15;
-                            const timeStr = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
-                            
-                            // Update or create custom label
-                            let label = thumb.querySelector('.time-slider-label');
-                            if (!label) {{
-                                label = document.createElement('div');
-                                label.className = 'time-slider-label';
-                                label.style.position = 'absolute';
-                                label.style.top = '-25px';
-                                label.style.fontSize = '12px';
-                                label.style.color = '#666';
-                                label.style.fontWeight = 'bold';
-                                label.style.whiteSpace = 'nowrap';
-                                label.style.transform = 'translateX(-50%)';
-                                label.style.pointerEvents = 'none';
-                                thumb.appendChild(label);
-                            }}
-                            label.textContent = timeStr;
-                        }}
-                    }});
-                }}
-            }}
-            
-            // Run formatting function
-            setTimeout(formatTimeSliderLabels, 200);
-            setInterval(formatTimeSliderLabels, 500);
-            </script>
-            """, unsafe_allow_html=True)
             
             # Display current time range values
             start_hour, start_minute = divmod(time_of_day_range[0] * 15, 60)
