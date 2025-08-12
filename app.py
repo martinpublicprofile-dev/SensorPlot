@@ -527,67 +527,26 @@ def main():
             # Time of day selection for averages calculation
             st.markdown('<span style="color: #888888; font-size: 14px; font-weight: bold;">Time of Day Range for Averages</span>', unsafe_allow_html=True)
             
-            # Create time options in 15-minute intervals
-            time_options = []
-            time_labels = []
-            for i in range(96):  # 24 hours * 4 (15-minute intervals)
-                hour = i // 4
-                minute = (i % 4) * 15
-                time_options.append(i)
-                time_labels.append(f"{hour:02d}:{minute:02d}")
-            
-            # Style the time selector slider
-            st.markdown("""
-            <style>
-            /* Style the time selector slider handles as large dots */
-            div[data-testid="stSlider"][key="time_range_slider"] > div[data-baseweb="slider"] > div > div > div[role="slider"] {
-                width: 20px !important;
-                height: 20px !important;
-                background-color: #FF9999 !important;
-                border-radius: 50% !important;
-                border: none !important;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-            }
-            
-            /* Style the base slider track as light grey */
-            div[data-testid="stSlider"][key="time_range_slider"] > div[data-baseweb="slider"] > div > div {
-                background-color: #E0E0E0 !important;
-                height: 4px !important;
-            }
-            
-            /* Style the active portion (between handles) as accent color */
-            div[data-testid="stSlider"][key="time_range_slider"] > div[data-baseweb="slider"] > div > div > div:not([role="slider"]) {
-                background-color: #FF9999 !important;
-            }
-            </style>
-            """, unsafe_allow_html=True)
-            
-            # Create slider with interval values (0-95)
-            selected_time_range = st.slider(
-                "Select time of day range:",
-                min_value=0,
-                max_value=95,
-                value=(0, 95),
-                step=1,
-                key="time_range_slider"
-            )
-            
-            # Convert slider values to time intervals for filtering function
-            start_interval = selected_time_range[0]
-            end_interval = selected_time_range[1]
-            time_of_day_range = (start_interval, end_interval)
-            
-            # Display current time values prominently
-            start_time_label = time_labels[start_interval]
-            end_time_label = time_labels[end_interval]
-            
             col1, col2 = st.columns(2)
             with col1:
-                st.markdown(f"<div style='text-align: center; font-size: 16px; color: #666; font-weight: bold;'>{start_time_label}</div>", unsafe_allow_html=True)
-                st.markdown(f"<div style='text-align: center; font-size: 12px; color: #888;'>Start Time</div>", unsafe_allow_html=True)
+                start_time = st.time_input(
+                    "Start Time",
+                    value=datetime.time(0, 0),
+                    step=datetime.timedelta(minutes=15),
+                    key="start_time"
+                )
             with col2:
-                st.markdown(f"<div style='text-align: center; font-size: 16px; color: #666; font-weight: bold;'>{end_time_label}</div>", unsafe_allow_html=True)
-                st.markdown(f"<div style='text-align: center; font-size: 12px; color: #888;'>End Time</div>", unsafe_allow_html=True)
+                end_time = st.time_input(
+                    "End Time",
+                    value=datetime.time(23, 45),
+                    step=datetime.timedelta(minutes=15),
+                    key="end_time"
+                )
+            
+            # Convert times to interval format for filtering function
+            start_interval = (start_time.hour * 4) + (start_time.minute // 15)
+            end_interval = (end_time.hour * 4) + (end_time.minute // 15)
+            time_of_day_range = (start_interval, end_interval)
 
             try:
                 daily_chart = create_daily_averages_chart(
