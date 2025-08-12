@@ -527,52 +527,64 @@ def main():
             # Time of day selection for averages calculation
             st.markdown('<span style="color: #888888; font-size: 14px; font-weight: bold;">Time of Day Range for Averages</span>', unsafe_allow_html=True)
             
-            # Style the time selector slider and hide default labels
+            # Convert time slots to timestamps for slider (using arbitrary date)
+            base_date = datetime.date(2025, 1, 1)
+            min_time_timestamp = int(datetime.datetime.combine(base_date, datetime.time(0, 0)).timestamp())
+            max_time_timestamp = int(datetime.datetime.combine(base_date, datetime.time(23, 45)).timestamp())
+            
+            # Style the time selector slider
             st.markdown("""
             <style>
-            /* Style the time selector slider handles with different color */
-            .stSlider:last-of-type > div[data-baseweb="slider"] > div > div > div[role="slider"] {
+            /* Style the time selector slider handles as large dots */
+            .stSlider > div[data-baseweb="slider"] > div > div > div[role="slider"] {
                 width: 20px !important;
                 height: 20px !important;
-                background-color: #99CCFF !important;
+                background-color: #FF9999 !important;
                 border-radius: 50% !important;
                 border: none !important;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
             }
             
-            /* Style the time selector slider track */
-            .stSlider:last-of-type > div[data-baseweb="slider"] > div > div {
-                background-color: #99CCFF !important;
+            /* Style the slider track */
+            .stSlider > div[data-baseweb="slider"] > div > div {
+                background-color: #FF9999 !important;
                 height: 4px !important;
-            }
-            
-            /* Hide default slider labels for time slider */
-            .stSlider:last-of-type > div[data-baseweb="slider"] > div > div > div > div {
-                display: none !important;
             }
             </style>
             """, unsafe_allow_html=True)
             
-            # Time of day range slider (in 15-minute intervals: 0 = 00:00, 95 = 23:45)
-            time_of_day_range = st.slider(
-                "Time range:",
-                min_value=0,
-                max_value=95,
-                value=(0, 95),
-                step=1,
-                label_visibility="collapsed"
+            # Create time range in 15-minute intervals
+            time_values = []
+            for i in range(96):  # 24 hours * 4 (15-minute intervals)
+                hour = i // 4
+                minute = (i % 4) * 15
+                timestamp = int(datetime.datetime.combine(base_date, datetime.time(hour, minute)).timestamp())
+                time_values.append(timestamp)
+            
+            selected_time_range = st.slider(
+                "Select time of day range:",
+                min_value=min_time_timestamp,
+                max_value=max_time_timestamp,
+                value=(min_time_timestamp, max_time_timestamp),
+                step=900  # 15 minutes in seconds
             )
             
-            # Display current time range values
-            start_hour, start_minute = divmod(time_of_day_range[0] * 15, 60)
-            end_hour, end_minute = divmod(time_of_day_range[1] * 15, 60)
+            # Convert timestamps back to time for processing
+            start_time_dt = datetime.datetime.fromtimestamp(selected_time_range[0])
+            end_time_dt = datetime.datetime.fromtimestamp(selected_time_range[1])
             
+            # Convert to the format needed by the filtering function
+            start_interval = (start_time_dt.hour * 4) + (start_time_dt.minute // 15)
+            end_interval = (end_time_dt.hour * 4) + (end_time_dt.minute // 15)
+            time_of_day_range = (start_interval, end_interval)
+            
+            # Display current time values prominently
             col1, col2 = st.columns(2)
             with col1:
-                st.markdown(f"<div style='text-align: center; font-size: 14px; color: #666; font-weight: bold;'>{start_hour:02d}:{start_minute:02d}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align: center; font-size: 14px; color: #666; font-weight: bold;'>{start_time_dt.strftime('%H:%M')}</div>", unsafe_allow_html=True)
                 st.markdown(f"<div style='text-align: center; font-size: 12px; color: #888;'>Start Time</div>", unsafe_allow_html=True)
             with col2:
-                st.markdown(f"<div style='text-align: center; font-size: 14px; color: #666; font-weight: bold;'>{end_hour:02d}:{end_minute:02d}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align: center; font-size: 14px; color: #666; font-weight: bold;'>{end_time_dt.strftime('%H:%M')}</div>", unsafe_allow_html=True)
                 st.markdown(f"<div style='text-align: center; font-size: 12px; color: #888;'>End Time</div>", unsafe_allow_html=True)
 
             try:
