@@ -424,12 +424,7 @@ def main():
 
             time_range = (start_datetime, end_datetime)
 
-            # Display current slider values prominently
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown(f"<div style='text-align: center; font-size: 14px; color: #666; font-weight: bold;'>{start_datetime.strftime('%H:%M %d/%m/%y')}</div>", unsafe_allow_html=True)
-            with col2:
-                st.markdown(f"<div style='text-align: center; font-size: 14px; color: #666; font-weight: bold;'>{end_datetime.strftime('%H:%M %d/%m/%y')}</div>", unsafe_allow_html=True)
+            
 
             # Data series visibility controls
             st.markdown("<h3 style='color: #888888;'>Raw Data Series Visibility</h3>", unsafe_allow_html=True)
