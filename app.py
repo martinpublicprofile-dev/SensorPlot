@@ -388,7 +388,58 @@ def main():
             min_timestamp = int(datetime.datetime.combine(min_date, datetime.time.min).timestamp())
             max_timestamp = int(datetime.datetime.combine(max_date, datetime.time.max).timestamp())
             
-            # Create a custom slider with datetime formatting
+            # Custom JavaScript to format slider labels
+            st.markdown(f"""
+            <style>
+            /* Hide default slider labels */
+            .stSlider > div > div > div > div {{
+                display: none;
+            }}
+            </style>
+            <script>
+            function formatSliderLabels() {{
+                // Find all slider elements
+                const sliders = document.querySelectorAll('[data-baseweb="slider"]');
+                sliders.forEach(slider => {{
+                    const thumbs = slider.querySelectorAll('[role="slider"]');
+                    thumbs.forEach(thumb => {{
+                        const value = thumb.getAttribute('aria-valuenow');
+                        if (value) {{
+                            const timestamp = parseInt(value);
+                            const date = new Date(timestamp * 1000);
+                            const formatted = date.toLocaleString('en-GB', {{
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: '2-digit'
+                            }}).replace(',', '');
+                            
+                            // Update or create label
+                            let label = thumb.querySelector('.custom-slider-label');
+                            if (!label) {{
+                                label = document.createElement('div');
+                                label.className = 'custom-slider-label';
+                                label.style.position = 'absolute';
+                                label.style.top = '-25px';
+                                label.style.fontSize = '12px';
+                                label.style.color = '#666';
+                                label.style.whiteSpace = 'nowrap';
+                                label.style.transform = 'translateX(-50%)';
+                                thumb.appendChild(label);
+                            }}
+                            label.textContent = formatted;
+                        }}
+                    }});
+                }});
+            }}
+            
+            // Run on load and periodically
+            setTimeout(formatSliderLabels, 100);
+            setInterval(formatSliderLabels, 500);
+            </script>
+            """, unsafe_allow_html=True)
+            
             selected_range = st.slider(
                 "Select time range:",
                 min_value=min_timestamp,
