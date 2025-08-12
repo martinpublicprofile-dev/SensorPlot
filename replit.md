@@ -23,7 +23,7 @@ Preferred communication style: Simple, everyday language.
 - **Time Series Support**: Built-in datetime parsing for time-based sensor readings
 
 ### User Interface Design
-- **Color Scheme**: Predefined pastel color palette for sensor differentiation, light grey section titles (#888888)
+- **Color Scheme**: Predefined pastel color palette for sensor differentiation, humidity data 20% darker than temperature data, light grey section titles (#888888)
 - **Minimalist Design**: Clean interface without icons, focusing on content and functionality
 - **Interactive Elements**: File upload widgets, dual-handle time range slider with real-time date/time display
 - **Responsive Design**: Wide layout configuration optimized for data visualization

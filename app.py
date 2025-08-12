@@ -26,6 +26,20 @@ PASTEL_COLORS = [
     "#FFCC99"   # Light orange
 ]
 
+def darken_color(hex_color, factor=0.2):
+    """Darken a hex color by the given factor (0.0 to 1.0)"""
+    # Remove the '#' if present
+    hex_color = hex_color.lstrip('#')
+    
+    # Convert to RGB
+    rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+    
+    # Darken by reducing each RGB component
+    darkened_rgb = tuple(int(component * (1 - factor)) for component in rgb)
+    
+    # Convert back to hex
+    return "#{:02x}{:02x}{:02x}".format(*darkened_rgb)
+
 def validate_csv_structure(df):
     """Validate that the CSV has the required columns"""
     required_columns = 5
@@ -125,12 +139,13 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
 
         # Humidity line
         humidity_visible = visible_series.get(f"{sensor_id}_humidity", True)
+        humidity_color = darken_color(color, 0.2)
         fig.add_trace(
             go.Scatter(
                 x=df['datetime'],
                 y=df['humidity'],
                 name=f"{sensor_name} - Humidity",
-                line=dict(color=color, width=2),
+                line=dict(color=humidity_color, width=2),
                 visible=humidity_visible,
                 hovertemplate="<b>%{fullData.name}</b><br>" +
                              "Time: %{x|%H:%M}<br>" +
@@ -250,12 +265,13 @@ def create_daily_averages_chart(data_dict, visible_series, time_range):
 
         # Humidity bars
         humidity_visible = visible_series.get(f"{sensor_id}_humidity_daily", True)
+        humidity_color = darken_color(color, 0.2)
         fig.add_trace(
             go.Bar(
                 x=df['datetime'],
                 y=df['humidity'],
                 name=f"{sensor_name} - Avg Humidity",
-                marker_color=color,
+                marker_color=humidity_color,
                 opacity=0.6,
                 visible=humidity_visible,
                 hovertemplate="<b>%{fullData.name}</b><br>" +
