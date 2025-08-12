@@ -388,56 +388,25 @@ def main():
             min_timestamp = int(datetime.datetime.combine(min_date, datetime.time.min).timestamp())
             max_timestamp = int(datetime.datetime.combine(max_date, datetime.time.max).timestamp())
             
-            # Custom JavaScript to format slider labels
-            st.markdown(f"""
+            # Style the slider with custom CSS
+            st.markdown("""
             <style>
-            /* Hide default slider labels */
-            .stSlider > div > div > div > div {{
-                display: none;
-            }}
-            </style>
-            <script>
-            function formatSliderLabels() {{
-                // Find all slider elements
-                const sliders = document.querySelectorAll('[data-baseweb="slider"]');
-                sliders.forEach(slider => {{
-                    const thumbs = slider.querySelectorAll('[role="slider"]');
-                    thumbs.forEach(thumb => {{
-                        const value = thumb.getAttribute('aria-valuenow');
-                        if (value) {{
-                            const timestamp = parseInt(value);
-                            const date = new Date(timestamp * 1000);
-                            const formatted = date.toLocaleString('en-GB', {{
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                day: '2-digit',
-                                month: '2-digit',
-                                year: '2-digit'
-                            }}).replace(',', '');
-                            
-                            // Update or create label
-                            let label = thumb.querySelector('.custom-slider-label');
-                            if (!label) {{
-                                label = document.createElement('div');
-                                label.className = 'custom-slider-label';
-                                label.style.position = 'absolute';
-                                label.style.top = '-25px';
-                                label.style.fontSize = '12px';
-                                label.style.color = '#666';
-                                label.style.whiteSpace = 'nowrap';
-                                label.style.transform = 'translateX(-50%)';
-                                thumb.appendChild(label);
-                            }}
-                            label.textContent = formatted;
-                        }}
-                    }});
-                }});
-            }}
+            /* Style the slider handles as large dots */
+            .stSlider > div[data-baseweb="slider"] > div > div > div[role="slider"] {
+                width: 20px !important;
+                height: 20px !important;
+                background-color: #FF9999 !important;
+                border-radius: 50% !important;
+                border: none !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+            }
             
-            // Run on load and periodically
-            setTimeout(formatSliderLabels, 100);
-            setInterval(formatSliderLabels, 500);
-            </script>
+            /* Style the slider track */
+            .stSlider > div[data-baseweb="slider"] > div > div {
+                background-color: #FF9999 !important;
+                height: 4px !important;
+            }
+            </style>
             """, unsafe_allow_html=True)
             
             selected_range = st.slider(
@@ -453,12 +422,14 @@ def main():
             
             time_range = (start_datetime, end_datetime)
             
-            # Display selected range with full datetime
+            # Display current slider values prominently
             col1, col2 = st.columns(2)
             with col1:
-                st.caption(f"**From:** {start_datetime.strftime('%H:%M %d/%m/%y')}")
+                st.markdown(f"<div style='text-align: center; font-size: 14px; color: #666; font-weight: bold;'>{start_datetime.strftime('%H:%M %d/%m/%y')}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align: center; font-size: 12px; color: #888;'>Minimum</div>", unsafe_allow_html=True)
             with col2:
-                st.caption(f"**To:** {end_datetime.strftime('%H:%M %d/%m/%y')}")
+                st.markdown(f"<div style='text-align: center; font-size: 14px; color: #666; font-weight: bold;'>{end_datetime.strftime('%H:%M %d/%m/%y')}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align: center; font-size: 12px; color: #888;'>Maximum</div>", unsafe_allow_html=True)
             
             # Data series visibility controls
             st.markdown("<h3 style='color: #888888;'>Raw Data Series Visibility</h3>", unsafe_allow_html=True)
