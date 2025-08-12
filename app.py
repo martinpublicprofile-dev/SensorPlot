@@ -566,7 +566,8 @@ def main():
                 min_value=min_time_timestamp,
                 max_value=max_time_timestamp,
                 value=(min_time_timestamp, max_time_timestamp),
-                step=900  # 15 minutes in seconds
+                step=900,  # 15 minutes in seconds
+                format="HH:mm"
             )
             
             # Convert timestamps back to time for processing
