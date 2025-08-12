@@ -401,10 +401,15 @@ def main():
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
             }
 
-            /* Style the slider track */
+            /* Style the base slider track as light grey */
             .stSlider > div[data-baseweb="slider"] > div > div {
-                background-color: #FF9999 !important;
+                background-color: #E0E0E0 !important;
                 height: 4px !important;
+            }
+
+            /* Style the active portion (between handles) as accent color */
+            .stSlider > div[data-baseweb="slider"] > div > div > div:not([role="slider"]) {
+                background-color: #FF9999 !important;
             }
             </style>
             """, unsafe_allow_html=True)
