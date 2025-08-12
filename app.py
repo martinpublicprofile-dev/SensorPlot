@@ -33,11 +33,11 @@ def validate_csv_structure(df):
     if len(df.columns) < required_columns:
         return False, f"CSV must have at least {required_columns} columns"
     
-    # Check if first column can be parsed as datetime
+    # Check if first column can be parsed as datetime with the expected format
     try:
-        pd.to_datetime(df.iloc[:, 0])
+        pd.to_datetime(df.iloc[:, 0], format='%Y/%m/%d %H:%M:%S', errors='raise')
     except:
-        return False, "First column must contain valid date/time values"
+        return False, "First column must contain valid date/time values in format YYYY/MM/DD HH:MM:SS"
     
     # Check if temperature and humidity columns are numeric
     try:
@@ -51,21 +51,23 @@ def validate_csv_structure(df):
 def process_csv_data(uploaded_file, sensor_id):
     """Process uploaded CSV file and return cleaned data"""
     try:
-        # Read CSV
+        # Read CSV with header row
         stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-        df = pd.read_csv(stringio, header=None)
+        df = pd.read_csv(stringio, header=0)
         
         # Validate structure
         is_valid, message = validate_csv_structure(df)
         if not is_valid:
             return None, message
         
-        # Assign column names
-        df.columns = ['datetime', 'temperature', 'temp_comfort', 'humidity', 'humidity_comfort'] + \
-                    [f'extra_{i}' for i in range(len(df.columns) - 5)]
+        # Assign column names (use first 5 columns)
+        new_columns = ['datetime', 'temperature', 'temp_comfort', 'humidity', 'humidity_comfort']
+        if len(df.columns) > 5:
+            new_columns.extend([f'extra_{i}' for i in range(5, len(df.columns))])
+        df.columns = new_columns[:len(df.columns)]
         
-        # Convert datetime
-        df['datetime'] = pd.to_datetime(df['datetime'])
+        # Convert datetime with specific format
+        df['datetime'] = pd.to_datetime(df['datetime'], format='%Y/%m/%d %H:%M:%S', errors='coerce')
         
         # Convert numeric columns
         df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
@@ -157,32 +159,41 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
         hovermode='x unified'
     )
     
-    # Update x-axis
+    # Update x-axis with day separators
     fig.update_xaxes(
         showgrid=True,
-        gridwidth=0.5,
-        gridcolor='lightgrey',
+        gridwidth=0.3,
+        gridcolor='#E0E0E0',
         showline=False,
         zeroline=False,
-        tickformat='%Y-%m-%d'
+        tickformat='%m/%d',
+        dtick='D1',
+        minor=dict(
+            dtick='D1',
+            showgrid=True,
+            gridwidth=0.2,
+            gridcolor='#F0F0F0'
+        )
     )
     
-    # Update y-axes
-    fig.update_yaxis(
+    # Update y-axes with hairline grids
+    fig.update_yaxes(
         title_text="Temperature (°C)",
         showgrid=True,
-        gridwidth=0.5,
-        gridcolor='lightgrey',
+        gridwidth=0.3,
+        gridcolor='#E0E0E0',
         showline=False,
         zeroline=False,
+        side='left',
         secondary_y=False
     )
     
-    fig.update_yaxis(
+    fig.update_yaxes(
         title_text="Humidity (%)",
         showgrid=False,
         showline=False,
         zeroline=False,
+        side='right',
         secondary_y=True
     )
     
@@ -353,9 +364,10 @@ def main():
             
             **Example:**
             ```
-            2025-01-01 12:00:00,23.5,normal,65.2,normal
-            2025-01-01 12:05:00,24.1,normal,66.8,normal
-            2025-01-01 12:10:00,24.8,high,67.1,normal
+            DateTime,Temperature,TempComfort,Humidity,HumidityComfort
+            2025/07/15 00:15:00,23.5,normal,65.2,normal
+            2025/07/15 00:20:00,24.1,normal,66.8,normal
+            2025/07/15 00:25:00,24.8,high,67.1,normal
             ```
             """)
 

@@ -29,10 +29,11 @@ Preferred communication style: Simple, everyday language.
 - **Session Persistence**: Maintains sensor data and naming across user sessions
 
 ### Data Requirements
-- **CSV Format**: Structured CSV files with specific column requirements
-- **Required Columns**: Minimum 5 columns (datetime, temperature, unknown, humidity, unknown)
+- **CSV Format**: Structured CSV files with header row and specific column requirements
+- **Required Columns**: Minimum 5 columns (datetime, temperature, temp_comfort, humidity, humidity_comfort)
+- **DateTime Format**: YYYY/MM/DD HH:MM:SS format (e.g., 2025/07/15 00:15:00)
 - **Data Types**: First column must be datetime-parseable, columns 2 and 4 must be numeric
-- **Validation**: Real-time CSV structure validation with descriptive error messages
+- **Validation**: Real-time CSV structure validation with descriptive error messages and format checking
 
 ## External Dependencies
 
