@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a Streamlit web application designed for visualizing sensor data from CSV files. The application provides an interactive interface for uploading, validating, and displaying sensor readings including temperature and humidity measurements. Users can upload multiple sensor datasets and view them through dynamic, color-coded visualizations using Plotly charts.
+This is a Streamlit web application designed for visualizing sensor data from CSV files. The application provides an interactive interface for uploading, validating, and displaying sensor readings including temperature and humidity measurements. Users can upload multiple sensor datasets and view them through two dynamic, color-coded visualizations: raw sensor data charts and daily averages charts using Plotly dual-axis charts.
 
 ## User Preferences
 
@@ -50,3 +50,6 @@ Preferred communication style: Simple, everyday language.
 ### Visualization Components
 - **Plotly Graph Objects**: Advanced chart creation and customization
 - **Plotly Subplots**: Multi-panel chart layouts for comparative analysis
+- **Dual-Axis Charts**: Temperature (left axis) and humidity (right axis) visualization
+- **Daily Aggregation**: Automatic calculation of daily averages for trend analysis
+- **Independent Visibility Controls**: Separate toggles for raw data and daily averages charts

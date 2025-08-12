@@ -199,6 +199,122 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
     
     return fig
 
+def create_daily_averages_chart(data_dict, visible_series, time_range):
+    """Create dual-axis chart with daily average temperature and humidity data"""
+    
+    # Create subplot with secondary y-axis
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    
+    # Calculate daily averages for each sensor
+    daily_data = {}
+    for sensor_id, df in data_dict.items():
+        # Filter by time range if specified
+        if time_range:
+            mask = (df['datetime'] >= time_range[0]) & (df['datetime'] <= time_range[1])
+            filtered_df = df[mask]
+        else:
+            filtered_df = df
+        
+        if not filtered_df.empty:
+            # Group by date and calculate averages
+            daily_avg = filtered_df.groupby(filtered_df['datetime'].dt.date).agg({
+                'temperature': 'mean',
+                'humidity': 'mean'
+            }).reset_index()
+            daily_avg['datetime'] = pd.to_datetime(daily_avg['datetime'])
+            daily_data[sensor_id] = daily_avg
+    
+    # Add temperature traces (left axis)
+    for i, (sensor_id, df) in enumerate(daily_data.items()):
+        sensor_name = st.session_state.sensor_names.get(sensor_id, f"Sensor {sensor_id}")
+        color = PASTEL_COLORS[i % len(PASTEL_COLORS)]
+        
+        # Temperature line
+        temp_visible = visible_series.get(f"{sensor_id}_temp_daily", True)
+        fig.add_trace(
+            go.Scatter(
+                x=df['datetime'],
+                y=df['temperature'],
+                name=f"{sensor_name} - Avg Temperature",
+                line=dict(color=color, width=2),
+                visible=temp_visible,
+                hovertemplate="<b>%{fullData.name}</b><br>" +
+                             "Date: %{x}<br>" +
+                             "Avg Temperature: %{y:.1f}°C<br>" +
+                             "<extra></extra>"
+            ),
+            secondary_y=False
+        )
+        
+        # Humidity line
+        humidity_visible = visible_series.get(f"{sensor_id}_humidity_daily", True)
+        fig.add_trace(
+            go.Scatter(
+                x=df['datetime'],
+                y=df['humidity'],
+                name=f"{sensor_name} - Avg Humidity",
+                line=dict(color=color, width=2, dash='dot'),
+                visible=humidity_visible,
+                hovertemplate="<b>%{fullData.name}</b><br>" +
+                             "Date: %{x}<br>" +
+                             "Avg Humidity: %{y:.1f}%<br>" +
+                             "<extra></extra>"
+            ),
+            secondary_y=True
+        )
+    
+    # Update layout for minimalist design
+    fig.update_layout(
+        title=None,
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        ),
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        margin=dict(l=0, r=0, t=40, b=0),
+        height=400,
+        hovermode='x unified'
+    )
+    
+    # Update x-axis with day separators
+    fig.update_xaxes(
+        showgrid=True,
+        gridwidth=0.3,
+        gridcolor='#E0E0E0',
+        showline=False,
+        zeroline=False,
+        tickformat='%m/%d',
+        dtick='D1'
+    )
+    
+    # Update y-axes with hairline grids
+    fig.update_yaxes(
+        title_text="Temperature (°C)",
+        showgrid=True,
+        gridwidth=0.3,
+        gridcolor='#E0E0E0',
+        showline=False,
+        zeroline=False,
+        side='left',
+        secondary_y=False
+    )
+    
+    fig.update_yaxes(
+        title_text="Humidity (%)",
+        showgrid=False,
+        showline=False,
+        zeroline=False,
+        side='right',
+        secondary_y=True
+    )
+    
+    return fig
+
 def main():
     st.title("📊 Sensor Data Visualization")
     st.markdown("Upload CSV files containing temperature and humidity sensor data for visualization")
@@ -282,7 +398,7 @@ def main():
             )
             
             # Data series visibility controls
-            st.subheader("👁️ Data Series Visibility")
+            st.subheader("👁️ Raw Data Series Visibility")
             visible_series = {}
             
             cols = st.columns(len(st.session_state.sensor_data))
@@ -303,8 +419,8 @@ def main():
                         key=f"humidity_{sensor_id}"
                     )
             
-            # Create and display chart
-            st.subheader("📈 Sensor Data Visualization")
+            # Create and display raw data chart
+            st.subheader("📈 Raw Sensor Data")
             
             try:
                 chart = create_dual_axis_chart(
@@ -314,36 +430,44 @@ def main():
                 )
                 st.plotly_chart(chart, use_container_width=True)
                 
-                # Display data summary
-                st.subheader("📊 Data Summary")
-                summary_cols = st.columns(len(st.session_state.sensor_data))
-                
-                for i, (sensor_id, df) in enumerate(st.session_state.sensor_data.items()):
-                    with summary_cols[i]:
-                        sensor_name = st.session_state.sensor_names.get(sensor_id, f"Sensor {sensor_id}")
-                        
-                        # Filter data by time range
-                        mask = (df['datetime'] >= time_range[0]) & (df['datetime'] <= time_range[1])
-                        filtered_df = df[mask]
-                        
-                        if not filtered_df.empty:
-                            st.metric(
-                                label=f"{sensor_name} - Records",
-                                value=len(filtered_df)
-                            )
-                            st.metric(
-                                label="Avg Temperature",
-                                value=f"{filtered_df['temperature'].mean():.1f}°C"
-                            )
-                            st.metric(
-                                label="Avg Humidity",
-                                value=f"{filtered_df['humidity'].mean():.1f}%"
-                            )
-                        else:
-                            st.write("No data in selected range")
-                            
             except Exception as e:
-                st.error(f"Error creating chart: {str(e)}")
+                st.error(f"Error creating raw data chart: {str(e)}")
+            
+            # Daily averages visibility controls
+            st.subheader("👁️ Daily Averages Series Visibility")
+            visible_series_daily = {}
+            
+            cols_daily = st.columns(len(st.session_state.sensor_data))
+            for i, (sensor_id, df) in enumerate(st.session_state.sensor_data.items()):
+                with cols_daily[i]:
+                    sensor_name = st.session_state.sensor_names.get(sensor_id, f"Sensor {sensor_id}")
+                    st.write(f"**{sensor_name}**")
+                    
+                    visible_series_daily[f"{sensor_id}_temp_daily"] = st.checkbox(
+                        "Avg Temperature",
+                        value=True,
+                        key=f"temp_daily_{sensor_id}"
+                    )
+                    
+                    visible_series_daily[f"{sensor_id}_humidity_daily"] = st.checkbox(
+                        "Avg Humidity",
+                        value=True,
+                        key=f"humidity_daily_{sensor_id}"
+                    )
+            
+            # Create and display daily averages chart
+            st.subheader("📊 Daily Averages")
+            
+            try:
+                daily_chart = create_daily_averages_chart(
+                    st.session_state.sensor_data,
+                    visible_series_daily,
+                    time_range
+                )
+                st.plotly_chart(daily_chart, use_container_width=True)
+                
+            except Exception as e:
+                st.error(f"Error creating daily averages chart: {str(e)}")
     
     else:
         # Empty state
