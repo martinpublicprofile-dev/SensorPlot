@@ -213,7 +213,7 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
 
     return fig
 
-def create_daily_averages_chart(data_dict, visible_series, time_range):
+def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_day_range=None):
     """Create dual-axis chart with daily average temperature and humidity data"""
 
     # Create subplot with secondary y-axis
@@ -230,6 +230,23 @@ def create_daily_averages_chart(data_dict, visible_series, time_range):
             filtered_df = df
 
         if not filtered_df.empty:
+            # Filter by time of day if specified
+            if time_of_day_range:
+                start_time = datetime.time(time_of_day_range[0] // 4, (time_of_day_range[0] % 4) * 15)
+                end_time = datetime.time(time_of_day_range[1] // 4, (time_of_day_range[1] % 4) * 15)
+                
+                filtered_df = filtered_df.copy()
+                filtered_df['time'] = filtered_df['datetime'].dt.time
+                
+                if start_time <= end_time:
+                    # Normal case: start before end (e.g., 06:00 to 18:00)
+                    time_mask = (filtered_df['time'] >= start_time) & (filtered_df['time'] <= end_time)
+                else:
+                    # Cross-midnight case: start after end (e.g., 18:00 to 06:00)
+                    time_mask = (filtered_df['time'] >= start_time) | (filtered_df['time'] <= end_time)
+                
+                filtered_df = filtered_df[time_mask]
+
             # Group by date and calculate averages
             daily_avg = filtered_df.groupby(filtered_df['datetime'].dt.date).agg({
                 'temperature': 'mean',
@@ -506,12 +523,58 @@ def main():
 
             # Create and display daily averages chart
             st.markdown("<h3 style='color: #888888;'>Daily Averages</h3>", unsafe_allow_html=True)
+            
+            # Time of day selection for averages calculation
+            st.markdown('<span style="color: #888888; font-size: 14px; font-weight: bold;">Time of Day Range for Averages</span>', unsafe_allow_html=True)
+            
+            # Style the time selector slider
+            st.markdown("""
+            <style>
+            /* Style the time selector slider handles with different color */
+            div[data-testid="stSlider"]:has(+ div:contains("Select time of day range for average calculation")) > div[data-baseweb="slider"] > div > div > div[role="slider"] {
+                width: 20px !important;
+                height: 20px !important;
+                background-color: #99CCFF !important;
+                border-radius: 50% !important;
+                border: none !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* Style the time selector slider track */
+            div[data-testid="stSlider"]:has(+ div:contains("Select time of day range for average calculation")) > div[data-baseweb="slider"] > div > div {
+                background-color: #99CCFF !important;
+                height: 4px !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Time of day range slider (in 15-minute intervals: 0 = 00:00, 95 = 23:45)
+            time_of_day_range = st.slider(
+                "Select time of day range for average calculation:",
+                min_value=0,
+                max_value=95,
+                value=(0, 95),
+                step=1
+            )
+            
+            # Display current time range values
+            start_hour, start_minute = divmod(time_of_day_range[0] * 15, 60)
+            end_hour, end_minute = divmod(time_of_day_range[1] * 15, 60)
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"<div style='text-align: center; font-size: 14px; color: #666; font-weight: bold;'>{start_hour:02d}:{start_minute:02d}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align: center; font-size: 12px; color: #888;'>Start Time</div>", unsafe_allow_html=True)
+            with col2:
+                st.markdown(f"<div style='text-align: center; font-size: 14px; color: #666; font-weight: bold;'>{end_hour:02d}:{end_minute:02d}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align: center; font-size: 12px; color: #888;'>End Time</div>", unsafe_allow_html=True)
 
             try:
                 daily_chart = create_daily_averages_chart(
                     st.session_state.sensor_data,
                     visible_series_daily,
-                    time_range
+                    time_range,
+                    time_of_day_range
                 )
                 st.plotly_chart(daily_chart, use_container_width=True)
 

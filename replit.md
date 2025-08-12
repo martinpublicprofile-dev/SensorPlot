@@ -54,7 +54,8 @@ Preferred communication style: Simple, everyday language.
 - **Plotly Graph Objects**: Advanced chart creation and customization
 - **Plotly Subplots**: Multi-panel chart layouts for comparative analysis
 - **Dual-Axis Charts**: Temperature (left axis) and humidity (right axis) visualization
-- **Daily Aggregation**: Automatic calculation of daily averages for trend analysis
+- **Daily Aggregation**: Automatic calculation of daily averages for trend analysis with configurable time-of-day truncation in 15-minute intervals
 - **Bar Charts**: Daily averages displayed as grouped bar charts with opacity (solid bars and lines for all data)
 - **Independent Visibility Controls**: Separate toggles for raw data and daily averages charts
 - **Time Range Slider**: Dual-handle slider with large dot handles and real-time formatted labels
+- **Time-of-Day Selection**: Separate dual-handle slider for filtering which hours of the day to include in daily average calculations (00:00-23:45 in 15-minute intervals)
