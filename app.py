@@ -8,7 +8,7 @@ from io import StringIO
 # Set page configuration
 st.set_page_config(
     page_title="Sensor Data Visualization",
-    page_icon="📊",
+    page_icon="◯",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -326,12 +326,12 @@ def create_daily_averages_chart(data_dict, visible_series, time_range):
     return fig
 
 def main():
-    st.title("📊 Sensor Data Visualization")
+    st.title("◯ Sensor Data Visualization")
     st.markdown("Upload CSV files containing temperature and humidity sensor data for visualization")
     
     # Sidebar for file uploads and controls
     with st.sidebar:
-        st.header("📁 Data Upload")
+        st.header("◇ Data Upload")
         
         uploaded_files = {}
         for i in range(1, 5):
@@ -361,9 +361,9 @@ def main():
                     
                     if processed_data is not None:
                         st.session_state.sensor_data[i] = processed_data
-                        st.success(f"✅ {len(processed_data)} records loaded")
+                        st.success(f"◉ {len(processed_data)} records loaded")
                     else:
-                        st.error(f"❌ {message}")
+                        st.error(f"◯ {message}")
                         if i in st.session_state.sensor_data:
                             del st.session_state.sensor_data[i]
             else:
@@ -383,18 +383,18 @@ def main():
             max_date = max(all_dates).date()
             
             # Time range selection with slider
-            st.subheader("📅 Time Range Selection")
+            st.subheader("◐ Time Range Selection")
             
             # Convert dates to timestamps for slider
             min_timestamp = int(datetime.datetime.combine(min_date, datetime.time.min).timestamp())
             max_timestamp = int(datetime.datetime.combine(max_date, datetime.time.max).timestamp())
             
+            # Create a custom slider with datetime formatting
             selected_range = st.slider(
                 "Select time range:",
                 min_value=min_timestamp,
                 max_value=max_timestamp,
-                value=(min_timestamp, max_timestamp),
-                format="MM/DD/YY"
+                value=(min_timestamp, max_timestamp)
             )
             
             # Convert back to datetime objects
@@ -403,11 +403,15 @@ def main():
             
             time_range = (start_datetime, end_datetime)
             
-            # Display selected range
-            st.write(f"Selected range: {start_datetime.strftime('%Y/%m/%d')} to {end_datetime.strftime('%Y/%m/%d')}")
+            # Display selected range with full datetime
+            col1, col2 = st.columns(2)
+            with col1:
+                st.caption(f"**From:** {start_datetime.strftime('%Y/%m/%d %H:%M')}")
+            with col2:
+                st.caption(f"**To:** {end_datetime.strftime('%Y/%m/%d %H:%M')}")
             
             # Data series visibility controls
-            st.subheader("👁️ Raw Data Series Visibility")
+            st.subheader("◑ Raw Data Series Visibility")
             visible_series = {}
             
             cols = st.columns(len(st.session_state.sensor_data))
@@ -424,12 +428,12 @@ def main():
                     
                     visible_series[f"{sensor_id}_humidity"] = st.checkbox(
                         "Humidity",
-                        value=True,
+                        value=False,
                         key=f"humidity_{sensor_id}"
                     )
             
             # Create and display raw data chart
-            st.subheader("📈 Raw Sensor Data")
+            st.subheader("◒ Raw Sensor Data")
             
             try:
                 chart = create_dual_axis_chart(
@@ -443,7 +447,7 @@ def main():
                 st.error(f"Error creating raw data chart: {str(e)}")
             
             # Daily averages visibility controls
-            st.subheader("👁️ Daily Averages Series Visibility")
+            st.subheader("◓ Daily Averages Series Visibility")
             visible_series_daily = {}
             
             cols_daily = st.columns(len(st.session_state.sensor_data))
@@ -460,12 +464,12 @@ def main():
                     
                     visible_series_daily[f"{sensor_id}_humidity_daily"] = st.checkbox(
                         "Avg Humidity",
-                        value=True,
+                        value=False,
                         key=f"humidity_daily_{sensor_id}"
                     )
             
             # Create and display daily averages chart
-            st.subheader("📊 Daily Averages")
+            st.subheader("◔ Daily Averages")
             
             try:
                 daily_chart = create_daily_averages_chart(
@@ -480,10 +484,10 @@ def main():
     
     else:
         # Empty state
-        st.info("👆 Please upload at least one CSV file in the sidebar to begin visualization")
+        st.info("◇ Please upload at least one CSV file in the sidebar to begin visualization")
         
         # Show expected CSV format
-        with st.expander("📋 Expected CSV Format"):
+        with st.expander("◈ Expected CSV Format"):
             st.markdown("""
             Your CSV files should have the following structure (no header row required):
             

@@ -24,10 +24,12 @@ Preferred communication style: Simple, everyday language.
 
 ### User Interface Design
 - **Color Scheme**: Predefined pastel color palette for sensor differentiation
-- **Interactive Elements**: File upload widgets, dual-handle time range slider, data display components
+- **Minimalist Icons**: Monochrome, hairline geometric shapes (◯, ◇, ◐, ◑, ◒, ◓, ◔, ◈, ◉)
+- **Interactive Elements**: File upload widgets, dual-handle time range slider with real-time date/time display
 - **Responsive Design**: Wide layout configuration optimized for data visualization
 - **Session Persistence**: Maintains sensor data and naming across user sessions
 - **Time Display**: Hover tooltips show time in HH:MM format for raw data, full date for averages
+- **Default Settings**: Humidity data series start as hidden by default
 
 ### Data Requirements
 - **CSV Format**: Structured CSV files with header row and specific column requirements
