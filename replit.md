@@ -24,9 +24,10 @@ Preferred communication style: Simple, everyday language.
 
 ### User Interface Design
 - **Color Scheme**: Predefined pastel color palette for sensor differentiation
-- **Interactive Elements**: File upload widgets, data display components
+- **Interactive Elements**: File upload widgets, dual-handle time range slider, data display components
 - **Responsive Design**: Wide layout configuration optimized for data visualization
 - **Session Persistence**: Maintains sensor data and naming across user sessions
+- **Time Display**: Hover tooltips show time in HH:MM format for raw data, full date for averages
 
 ### Data Requirements
 - **CSV Format**: Structured CSV files with header row and specific column requirements
@@ -52,4 +53,6 @@ Preferred communication style: Simple, everyday language.
 - **Plotly Subplots**: Multi-panel chart layouts for comparative analysis
 - **Dual-Axis Charts**: Temperature (left axis) and humidity (right axis) visualization
 - **Daily Aggregation**: Automatic calculation of daily averages for trend analysis
+- **Bar Charts**: Daily averages displayed as grouped bar charts with opacity and patterns
 - **Independent Visibility Controls**: Separate toggles for raw data and daily averages charts
+- **Time Range Slider**: Dual-handle slider for interactive time period selection

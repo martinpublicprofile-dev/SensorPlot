@@ -117,7 +117,7 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
                 line=dict(color=color, width=2),
                 visible=temp_visible,
                 hovertemplate="<b>%{fullData.name}</b><br>" +
-                             "Time: %{x}<br>" +
+                             "Time: %{x|%H:%M}<br>" +
                              "Temperature: %{y:.1f}°C<br>" +
                              "<extra></extra>"
             ),
@@ -134,7 +134,7 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
                 line=dict(color=color, width=2, dash='dot'),
                 visible=humidity_visible,
                 hovertemplate="<b>%{fullData.name}</b><br>" +
-                             "Time: %{x}<br>" +
+                             "Time: %{x|%H:%M}<br>" +
                              "Humidity: %{y:.1f}%<br>" +
                              "<extra></extra>"
             ),
@@ -229,36 +229,43 @@ def create_daily_averages_chart(data_dict, visible_series, time_range):
         sensor_name = st.session_state.sensor_names.get(sensor_id, f"Sensor {sensor_id}")
         color = PASTEL_COLORS[i % len(PASTEL_COLORS)]
         
-        # Temperature line
+        # Temperature bars
         temp_visible = visible_series.get(f"{sensor_id}_temp_daily", True)
         fig.add_trace(
-            go.Scatter(
+            go.Bar(
                 x=df['datetime'],
                 y=df['temperature'],
                 name=f"{sensor_name} - Avg Temperature",
-                line=dict(color=color, width=2),
+                marker_color=color,
+                opacity=0.7,
                 visible=temp_visible,
                 hovertemplate="<b>%{fullData.name}</b><br>" +
-                             "Date: %{x}<br>" +
+                             "Date: %{x|%Y/%m/%d}<br>" +
                              "Avg Temperature: %{y:.1f}°C<br>" +
-                             "<extra></extra>"
+                             "<extra></extra>",
+                yaxis='y',
+                offsetgroup=f'temp_{i}'
             ),
             secondary_y=False
         )
         
-        # Humidity line
+        # Humidity bars
         humidity_visible = visible_series.get(f"{sensor_id}_humidity_daily", True)
         fig.add_trace(
-            go.Scatter(
+            go.Bar(
                 x=df['datetime'],
                 y=df['humidity'],
                 name=f"{sensor_name} - Avg Humidity",
-                line=dict(color=color, width=2, dash='dot'),
+                marker_color=color,
+                opacity=0.5,
+                marker_pattern_shape="/",
                 visible=humidity_visible,
                 hovertemplate="<b>%{fullData.name}</b><br>" +
-                             "Date: %{x}<br>" +
+                             "Date: %{x|%Y/%m/%d}<br>" +
                              "Avg Humidity: %{y:.1f}%<br>" +
-                             "<extra></extra>"
+                             "<extra></extra>",
+                yaxis='y2',
+                offsetgroup=f'humidity_{i}'
             ),
             secondary_y=True
         )
@@ -278,7 +285,10 @@ def create_daily_averages_chart(data_dict, visible_series, time_range):
         paper_bgcolor='white',
         margin=dict(l=0, r=0, t=40, b=0),
         height=400,
-        hovermode='x unified'
+        hovermode='x unified',
+        barmode='group',
+        bargap=0.1,
+        bargroupgap=0.1
     )
     
     # Update x-axis with day separators
@@ -372,30 +382,29 @@ def main():
             min_date = min(all_dates).date()
             max_date = max(all_dates).date()
             
-            # Time range selection
+            # Time range selection with slider
             st.subheader("📅 Time Range Selection")
-            col1, col2 = st.columns(2)
             
-            with col1:
-                start_date = st.date_input(
-                    "Start Date",
-                    value=min_date,
-                    min_value=min_date,
-                    max_value=max_date
-                )
+            # Convert dates to timestamps for slider
+            min_timestamp = int(datetime.datetime.combine(min_date, datetime.time.min).timestamp())
+            max_timestamp = int(datetime.datetime.combine(max_date, datetime.time.max).timestamp())
             
-            with col2:
-                end_date = st.date_input(
-                    "End Date",
-                    value=max_date,
-                    min_value=min_date,
-                    max_value=max_date
-                )
-            
-            time_range = (
-                datetime.datetime.combine(start_date, datetime.time.min),
-                datetime.datetime.combine(end_date, datetime.time.max)
+            selected_range = st.slider(
+                "Select time range:",
+                min_value=min_timestamp,
+                max_value=max_timestamp,
+                value=(min_timestamp, max_timestamp),
+                format="MM/DD/YY"
             )
+            
+            # Convert back to datetime objects
+            start_datetime = datetime.datetime.fromtimestamp(selected_range[0])
+            end_datetime = datetime.datetime.fromtimestamp(selected_range[1])
+            
+            time_range = (start_datetime, end_datetime)
+            
+            # Display selected range
+            st.write(f"Selected range: {start_datetime.strftime('%Y/%m/%d')} to {end_datetime.strftime('%Y/%m/%d')}")
             
             # Data series visibility controls
             st.subheader("👁️ Raw Data Series Visibility")
