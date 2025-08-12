@@ -8,7 +8,6 @@ from io import StringIO
 # Set page configuration
 st.set_page_config(
     page_title="Sensor Data Visualization",
-    page_icon="◯",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -326,12 +325,12 @@ def create_daily_averages_chart(data_dict, visible_series, time_range):
     return fig
 
 def main():
-    st.title("◯ Sensor Data Visualization")
+    st.markdown("<h1 style='color: #888888;'>Sensor Data Visualization</h1>", unsafe_allow_html=True)
     st.markdown("Upload CSV files containing temperature and humidity sensor data for visualization")
     
     # Sidebar for file uploads and controls
     with st.sidebar:
-        st.header("◇ Data Upload")
+        st.markdown("<h2 style='color: #888888;'>Data Upload</h2>", unsafe_allow_html=True)
         
         uploaded_files = {}
         for i in range(1, 5):
@@ -361,9 +360,9 @@ def main():
                     
                     if processed_data is not None:
                         st.session_state.sensor_data[i] = processed_data
-                        st.success(f"◉ {len(processed_data)} records loaded")
+                        st.success(f"{len(processed_data)} records loaded")
                     else:
-                        st.error(f"◯ {message}")
+                        st.error(f"{message}")
                         if i in st.session_state.sensor_data:
                             del st.session_state.sensor_data[i]
             else:
@@ -383,7 +382,7 @@ def main():
             max_date = max(all_dates).date()
             
             # Time range selection with slider
-            st.subheader("◐ Time Range Selection")
+            st.markdown("<h3 style='color: #888888;'>Time Range Selection</h3>", unsafe_allow_html=True)
             
             # Convert dates to timestamps for slider
             min_timestamp = int(datetime.datetime.combine(min_date, datetime.time.min).timestamp())
@@ -406,12 +405,12 @@ def main():
             # Display selected range with full datetime
             col1, col2 = st.columns(2)
             with col1:
-                st.caption(f"**From:** {start_datetime.strftime('%Y/%m/%d %H:%M')}")
+                st.caption(f"**From:** {start_datetime.strftime('%H:%M %d/%m/%y')}")
             with col2:
-                st.caption(f"**To:** {end_datetime.strftime('%Y/%m/%d %H:%M')}")
+                st.caption(f"**To:** {end_datetime.strftime('%H:%M %d/%m/%y')}")
             
             # Data series visibility controls
-            st.subheader("◑ Raw Data Series Visibility")
+            st.markdown("<h3 style='color: #888888;'>Raw Data Series Visibility</h3>", unsafe_allow_html=True)
             visible_series = {}
             
             cols = st.columns(len(st.session_state.sensor_data))
@@ -433,7 +432,7 @@ def main():
                     )
             
             # Create and display raw data chart
-            st.subheader("◒ Raw Sensor Data")
+            st.markdown("<h3 style='color: #888888;'>Raw Sensor Data</h3>", unsafe_allow_html=True)
             
             try:
                 chart = create_dual_axis_chart(
@@ -447,7 +446,7 @@ def main():
                 st.error(f"Error creating raw data chart: {str(e)}")
             
             # Daily averages visibility controls
-            st.subheader("◓ Daily Averages Series Visibility")
+            st.markdown("<h3 style='color: #888888;'>Daily Averages Series Visibility</h3>", unsafe_allow_html=True)
             visible_series_daily = {}
             
             cols_daily = st.columns(len(st.session_state.sensor_data))
@@ -469,7 +468,7 @@ def main():
                     )
             
             # Create and display daily averages chart
-            st.subheader("◔ Daily Averages")
+            st.markdown("<h3 style='color: #888888;'>Daily Averages</h3>", unsafe_allow_html=True)
             
             try:
                 daily_chart = create_daily_averages_chart(
@@ -484,10 +483,10 @@ def main():
     
     else:
         # Empty state
-        st.info("◇ Please upload at least one CSV file in the sidebar to begin visualization")
+        st.info("Please upload at least one CSV file in the sidebar to begin visualization")
         
         # Show expected CSV format
-        with st.expander("◈ Expected CSV Format"):
+        with st.expander("Expected CSV Format"):
             st.markdown("""
             Your CSV files should have the following structure (no header row required):
             

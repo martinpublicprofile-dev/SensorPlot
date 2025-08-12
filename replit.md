@@ -23,12 +23,12 @@ Preferred communication style: Simple, everyday language.
 - **Time Series Support**: Built-in datetime parsing for time-based sensor readings
 
 ### User Interface Design
-- **Color Scheme**: Predefined pastel color palette for sensor differentiation
-- **Minimalist Icons**: Monochrome, hairline geometric shapes (◯, ◇, ◐, ◑, ◒, ◓, ◔, ◈, ◉)
+- **Color Scheme**: Predefined pastel color palette for sensor differentiation, light grey section titles (#888888)
+- **Minimalist Design**: Clean interface without icons, focusing on content and functionality
 - **Interactive Elements**: File upload widgets, dual-handle time range slider with real-time date/time display
 - **Responsive Design**: Wide layout configuration optimized for data visualization
 - **Session Persistence**: Maintains sensor data and naming across user sessions
-- **Time Display**: Hover tooltips show time in HH:MM format for raw data, full date for averages
+- **Time Display**: Hover tooltips show time in HH:MM format for raw data, time range labels in HH:MM DD/MM/YY format
 - **Default Settings**: Humidity data series start as hidden by default
 
 ### Data Requirements
