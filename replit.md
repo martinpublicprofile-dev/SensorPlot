@@ -55,6 +55,6 @@ Preferred communication style: Simple, everyday language.
 - **Plotly Subplots**: Multi-panel chart layouts for comparative analysis
 - **Dual-Axis Charts**: Temperature (left axis) and humidity (right axis) visualization
 - **Daily Aggregation**: Automatic calculation of daily averages for trend analysis
-- **Bar Charts**: Daily averages displayed as grouped bar charts with opacity and patterns
+- **Bar Charts**: Daily averages displayed as grouped bar charts with opacity (solid bars and lines for all data)
 - **Independent Visibility Controls**: Separate toggles for raw data and daily averages charts
-- **Time Range Slider**: Dual-handle slider for interactive time period selection
+- **Time Range Slider**: Dual-handle slider with large dot handles and real-time formatted labels

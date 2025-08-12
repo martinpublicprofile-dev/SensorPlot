@@ -130,7 +130,7 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
                 x=df['datetime'],
                 y=df['humidity'],
                 name=f"{sensor_name} - Humidity",
-                line=dict(color=color, width=2, dash='dot'),
+                line=dict(color=color, width=2),
                 visible=humidity_visible,
                 hovertemplate="<b>%{fullData.name}</b><br>" +
                              "Time: %{x|%H:%M}<br>" +
@@ -256,8 +256,7 @@ def create_daily_averages_chart(data_dict, visible_series, time_range):
                 y=df['humidity'],
                 name=f"{sensor_name} - Avg Humidity",
                 marker_color=color,
-                opacity=0.5,
-                marker_pattern_shape="/",
+                opacity=0.6,
                 visible=humidity_visible,
                 hovertemplate="<b>%{fullData.name}</b><br>" +
                              "Date: %{x|%Y/%m/%d}<br>" +
