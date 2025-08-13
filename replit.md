@@ -38,6 +38,21 @@ Preferred communication style: Simple, everyday language.
 - **Data Types**: First column must be datetime-parseable, columns 2 and 4 must be numeric
 - **Validation**: Real-time CSV structure validation with descriptive error messages and format checking
 
+## Deployment Configuration
+
+### Streamlit Cloud Deployment
+- **Port Configuration**: 8501 (Streamlit Cloud standard)
+- **Address**: 0.0.0.0 for network accessibility
+- **CORS Settings**: Disabled for cloud deployment compatibility
+- **Main Files**: `app.py` (primary), `streamlit_app.py` (cloud entry point)
+- **Dependencies**: Managed via `pyproject.toml` with core libraries pinned
+- **System Packages**: Minimal requirements specified in `packages.txt`
+
+### Local Development
+- **Port**: 8501 (matches cloud deployment)
+- **Configuration**: `.streamlit/config.toml` optimized for both environments
+- **Theme**: Custom pastel theme with accessibility considerations
+
 ## External Dependencies
 
 ### Core Libraries
