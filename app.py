@@ -799,6 +799,12 @@ def main():
                 )
             
             # Convert times to interval format for filtering function
+            # Handle None values with defaults
+            if start_time is None:
+                start_time = datetime.time(0, 0)
+            if end_time is None:
+                end_time = datetime.time(23, 45)
+                
             start_interval = (start_time.hour * 4) + (start_time.minute // 15)
             end_interval = (end_time.hour * 4) + (end_time.minute // 15)
             time_of_day_range = (start_interval, end_interval)
