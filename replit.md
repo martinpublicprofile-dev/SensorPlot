@@ -14,7 +14,8 @@ Preferred communication style: Simple, everyday language.
 - **Framework**: Streamlit for web interface
 - **Visualization**: Plotly for interactive charts and graphs
 - **Layout**: Wide layout with expandable sidebar for controls
-- **State Management**: Streamlit session state for persisting uploaded data and sensor configurations across user interactions
+- **State Management**: Streamlit session state with disk-based persistence using pickle files for indefinite data storage across browser sessions and refreshes
+- **Data Persistence**: Uploaded sensor data and configurations automatically saved to local pickle files and restored on app restart
 
 ### Data Processing
 - **File Handling**: CSV file upload and validation system
@@ -25,11 +26,12 @@ Preferred communication style: Simple, everyday language.
 ### User Interface Design
 - **Color Scheme**: Predefined pastel color palette for sensor differentiation, humidity data 20% darker than temperature data, light grey section titles (#888888)
 - **Minimalist Design**: Clean interface without icons, focusing on content and functionality
-- **Interactive Elements**: File upload widgets, dual-handle time range slider with real-time date/time display
+- **Interactive Elements**: File upload widgets, dual-handle time range slider with real-time date/time display, clear data button
 - **Responsive Design**: Wide layout configuration optimized for data visualization
-- **Session Persistence**: Maintains sensor data and naming across user sessions
+- **Session Persistence**: Maintains sensor data and naming indefinitely across browser sessions, refreshes, and app restarts using local file storage
 - **Time Display**: Hover tooltips show time in HH:MM format for raw data, time range labels in HH:MM DD/MM/YY format
 - **Default Settings**: Humidity data series start as hidden by default
+- **Data Status**: Real-time display of currently loaded datasets with record counts and clear data management controls
 
 ### Data Requirements
 - **CSV Format**: Structured CSV files with header row and specific column requirements
@@ -64,6 +66,8 @@ Preferred communication style: Simple, everyday language.
 ### File Processing
 - **StringIO**: Python's built-in module for string-based file operations
 - **CSV Processing**: Pandas-based CSV reading and validation
+- **Data Persistence**: Pickle module for binary serialization of sensor data and names to local files
+- **File Management**: Automatic save/load operations with error handling for robust data persistence
 
 ### Visualization Components
 - **Plotly Graph Objects**: Advanced chart creation and customization

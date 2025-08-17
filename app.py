@@ -4,6 +4,8 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import datetime
 from io import StringIO
+import pickle
+import os
 
 # Set page configuration
 st.set_page_config(
@@ -25,6 +27,35 @@ PASTEL_COLORS = [
     "#99FF99",  # Light green
     "#FFCC99"   # Light orange
 ]
+
+# File paths for persistent storage
+SENSOR_DATA_FILE = "sensor_data.pkl"
+SENSOR_NAMES_FILE = "sensor_names.pkl"
+
+def save_sensor_data():
+    """Save sensor data to disk for persistence"""
+    try:
+        with open(SENSOR_DATA_FILE, 'wb') as f:
+            pickle.dump(st.session_state.sensor_data, f)
+        with open(SENSOR_NAMES_FILE, 'wb') as f:
+            pickle.dump(st.session_state.sensor_names, f)
+    except Exception as e:
+        # Silent fail - don't disrupt the app if saving fails
+        pass
+
+def load_sensor_data():
+    """Load sensor data from disk if it exists"""
+    try:
+        if os.path.exists(SENSOR_DATA_FILE) and os.path.exists(SENSOR_NAMES_FILE):
+            with open(SENSOR_DATA_FILE, 'rb') as f:
+                sensor_data = pickle.load(f)
+            with open(SENSOR_NAMES_FILE, 'rb') as f:
+                sensor_names = pickle.load(f)
+            return sensor_data, sensor_names
+    except Exception as e:
+        # Silent fail - return empty data if loading fails
+        pass
+    return {}, {}
 
 def darken_color(hex_color, factor=0.2):
     """Darken a hex color by the given factor (0.0 to 1.0)"""
@@ -359,16 +390,38 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
 def main():
     # Initialize session state if not already done
     if 'sensor_data' not in st.session_state:
-        st.session_state.sensor_data = {}
+        # Try to load from disk first
+        loaded_data, loaded_names = load_sensor_data()
+        st.session_state.sensor_data = loaded_data
+        st.session_state.sensor_names = loaded_names
     if 'sensor_names' not in st.session_state:
         st.session_state.sensor_names = {}
     
     st.markdown("<h1 style='color: #888888;'>Sensor Data Visualization</h1>", unsafe_allow_html=True)
     st.markdown("Upload CSV files containing temperature and humidity sensor data for visualization")
+    
+    # Show currently loaded data status
+    if st.session_state.sensor_data:
+        loaded_sensors = []
+        for sensor_id, data in st.session_state.sensor_data.items():
+            sensor_name = st.session_state.sensor_names.get(sensor_id, f"Sensor {sensor_id}")
+            loaded_sensors.append(f"{sensor_name} ({len(data)} records)")
+        
+        st.info(f"📊 **Currently loaded:** {', '.join(loaded_sensors)}")
+    else:
+        st.info("📤 **No data loaded** - Upload CSV files to begin visualization")
 
     # Sidebar for file uploads and controls
     with st.sidebar:
         st.markdown("<h2 style='color: #888888;'>Data Upload</h2>", unsafe_allow_html=True)
+        
+        # Clear all data button
+        if st.session_state.sensor_data:
+            if st.button("🗑️ Clear All Data", help="Remove all uploaded sensor data"):
+                st.session_state.sensor_data = {}
+                st.session_state.sensor_names = {}
+                save_sensor_data()
+                st.rerun()
 
         uploaded_files = {}
         for i in range(1, 5):
@@ -398,15 +451,21 @@ def main():
 
                     if processed_data is not None:
                         st.session_state.sensor_data[i] = processed_data
+                        # Save to disk for persistence
+                        save_sensor_data()
                         st.success(f"{len(processed_data)} records loaded")
                     else:
                         st.error(f"{message}")
                         if i in st.session_state.sensor_data:
                             del st.session_state.sensor_data[i]
+                            # Save updated state to disk
+                            save_sensor_data()
             else:
                 # Remove data if file is removed
                 if i in st.session_state.sensor_data:
                     del st.session_state.sensor_data[i]
+                    # Save updated state to disk
+                    save_sensor_data()
 
     # Main content area
     if st.session_state.sensor_data:
