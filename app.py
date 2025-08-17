@@ -444,7 +444,32 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
 
     return fig
 
+def check_password():
+    """Check if the user has entered the correct password"""
+    if 'password_correct' not in st.session_state:
+        st.session_state.password_correct = False
+    
+    if not st.session_state.password_correct:
+        st.title("🔒 Sensor Data Access")
+        st.markdown("### Please enter the password to access the sensor data visualization")
+        
+        password = st.text_input("Password:", type="password", key="password_input")
+        
+        col1, col2, col3 = st.columns([1, 1, 2])
+        with col2:
+            if st.button("Access", type="primary"):
+                if password == "sensordata":
+                    st.session_state.password_correct = True
+                    st.rerun()
+                else:
+                    st.error("Incorrect password. Please try again.")
+        
+        st.stop()
+
 def main():
+    # Check password first
+    check_password()
+    
     # Initialize session state if not already done
     if 'sensor_data' not in st.session_state:
         # Try to load from disk first
@@ -488,6 +513,12 @@ def main():
 
     # Sidebar for file uploads and controls
     with st.sidebar:
+        # Add logout option for authenticated users
+        st.markdown("---")
+        if st.button("🔓 Logout", help="Logout and return to password screen"):
+            st.session_state.password_correct = False
+            st.rerun()
+        
         st.markdown("<h2 style='color: #888888;'>Data Upload</h2>", unsafe_allow_html=True)
         
         # Clear all data button

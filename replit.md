@@ -26,12 +26,13 @@ Preferred communication style: Simple, everyday language.
 ### User Interface Design
 - **Color Scheme**: Predefined pastel color palette for sensor differentiation, humidity data 20% darker than temperature data, light grey section titles (#888888)
 - **Minimalist Design**: Clean interface without icons, focusing on content and functionality
-- **Interactive Elements**: File upload widgets, dual-handle time range slider with real-time date/time display, clear data button
+- **Interactive Elements**: File upload widgets, dual-handle time range slider with real-time date/time display, clear data button, logout functionality
 - **Responsive Design**: Wide layout configuration optimized for data visualization
 - **Comprehensive Persistence**: Maintains all user preferences indefinitely - sensor data, names, axis ranges, time selections, checkbox states, and UI settings across browser sessions, refreshes, and app restarts using local file storage
 - **Time Display**: Hover tooltips show time in HH:MM format for raw data, time range labels in HH:MM DD/MM/YY format
 - **Default Settings**: Humidity data series start as hidden by default
 - **Data Status**: Real-time display of currently loaded datasets with record counts and clear data management controls
+- **Password Protection**: Secure access control requiring password authentication before accessing sensor data visualization
 
 ### Data Requirements
 - **CSV Format**: Structured CSV files with header row and specific column requirements
