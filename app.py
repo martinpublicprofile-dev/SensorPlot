@@ -357,6 +357,12 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
     return fig
 
 def main():
+    # Initialize session state if not already done
+    if 'sensor_data' not in st.session_state:
+        st.session_state.sensor_data = {}
+    if 'sensor_names' not in st.session_state:
+        st.session_state.sensor_names = {}
+    
     st.markdown("<h1 style='color: #888888;'>Sensor Data Visualization</h1>", unsafe_allow_html=True)
     st.markdown("Upload CSV files containing temperature and humidity sensor data for visualization")
 
