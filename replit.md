@@ -28,7 +28,7 @@ Preferred communication style: Simple, everyday language.
 - **Minimalist Design**: Clean interface without icons, focusing on content and functionality
 - **Interactive Elements**: File upload widgets, dual-handle time range slider with real-time date/time display, clear data button
 - **Responsive Design**: Wide layout configuration optimized for data visualization
-- **Session Persistence**: Maintains sensor data and naming indefinitely across browser sessions, refreshes, and app restarts using local file storage
+- **Comprehensive Persistence**: Maintains all user preferences indefinitely - sensor data, names, axis ranges, time selections, checkbox states, and UI settings across browser sessions, refreshes, and app restarts using local file storage
 - **Time Display**: Hover tooltips show time in HH:MM format for raw data, time range labels in HH:MM DD/MM/YY format
 - **Default Settings**: Humidity data series start as hidden by default
 - **Data Status**: Real-time display of currently loaded datasets with record counts and clear data management controls
@@ -66,8 +66,9 @@ Preferred communication style: Simple, everyday language.
 ### File Processing
 - **StringIO**: Python's built-in module for string-based file operations
 - **CSV Processing**: Pandas-based CSV reading and validation
-- **Data Persistence**: Pickle module for binary serialization of sensor data and names to local files
-- **File Management**: Automatic save/load operations with error handling for robust data persistence
+- **Data Persistence**: Pickle module for binary serialization of sensor data, names, and complete UI state to local files
+- **File Management**: Automatic save/load operations with error handling for robust data persistence across all user interactions
+- **State Synchronization**: Real-time saving of temperature axis ranges, time range selections, checkbox visibility states, and time-of-day preferences
 
 ### Visualization Components
 - **Plotly Graph Objects**: Advanced chart creation and customization
@@ -78,3 +79,6 @@ Preferred communication style: Simple, everyday language.
 - **Independent Visibility Controls**: Separate toggles for raw data and daily averages charts
 - **Time Range Slider**: Dual-handle slider with large dot handles and real-time formatted labels
 - **Time-of-Day Selection**: Separate dual-handle slider for filtering which hours of the day to include in daily average calculations (00:00-23:45 in 15-minute intervals)
+- **Manual Axis Control**: Temperature axis min/max input controls with Auto reset buttons for both raw data and daily averages charts
+- **Fixed Humidity Range**: Humidity axis always displays 0-100% scale without auto-scaling
+- **Persistent User Preferences**: All axis settings, time ranges, visibility toggles, and interface selections automatically saved and restored

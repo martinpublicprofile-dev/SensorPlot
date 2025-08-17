@@ -31,6 +31,7 @@ PASTEL_COLORS = [
 # File paths for persistent storage
 SENSOR_DATA_FILE = "sensor_data.pkl"
 SENSOR_NAMES_FILE = "sensor_names.pkl"
+UI_STATE_FILE = "ui_state.pkl"
 
 def save_sensor_data():
     """Save sensor data to disk for persistence"""
@@ -39,6 +40,33 @@ def save_sensor_data():
             pickle.dump(st.session_state.sensor_data, f)
         with open(SENSOR_NAMES_FILE, 'wb') as f:
             pickle.dump(st.session_state.sensor_names, f)
+    except Exception as e:
+        # Silent fail - don't disrupt the app if saving fails
+        pass
+
+def save_ui_state():
+    """Save UI state including axis settings, time ranges, and checkbox states"""
+    ui_state = {
+        'temp_axis_min_raw': getattr(st.session_state, 'temp_axis_min_raw', None),
+        'temp_axis_max_raw': getattr(st.session_state, 'temp_axis_max_raw', None),
+        'temp_axis_min_daily': getattr(st.session_state, 'temp_axis_min_daily', None),
+        'temp_axis_max_daily': getattr(st.session_state, 'temp_axis_max_daily', None),
+        'time_range_start': getattr(st.session_state, 'time_range_start', None),
+        'time_range_end': getattr(st.session_state, 'time_range_end', None),
+        'start_time': getattr(st.session_state, 'start_time', None),
+        'end_time': getattr(st.session_state, 'end_time', None),
+    }
+    
+    # Save checkbox states for all sensors
+    for sensor_id in st.session_state.get('sensor_data', {}):
+        ui_state[f'temp_{sensor_id}'] = getattr(st.session_state, f'temp_{sensor_id}', True)
+        ui_state[f'humidity_{sensor_id}'] = getattr(st.session_state, f'humidity_{sensor_id}', False)
+        ui_state[f'temp_daily_{sensor_id}'] = getattr(st.session_state, f'temp_daily_{sensor_id}', True)
+        ui_state[f'humidity_daily_{sensor_id}'] = getattr(st.session_state, f'humidity_daily_{sensor_id}', False)
+    
+    try:
+        with open(UI_STATE_FILE, 'wb') as f:
+            pickle.dump(ui_state, f)
     except Exception as e:
         # Silent fail - don't disrupt the app if saving fails
         pass
@@ -56,6 +84,17 @@ def load_sensor_data():
         # Silent fail - return empty data if loading fails
         pass
     return {}, {}
+
+def load_ui_state():
+    """Load UI state from disk if it exists"""
+    try:
+        if os.path.exists(UI_STATE_FILE):
+            with open(UI_STATE_FILE, 'rb') as f:
+                return pickle.load(f)
+    except Exception as e:
+        # Silent fail - return empty dict if loading fails
+        pass
+    return {}
 
 def darken_color(hex_color, factor=0.2):
     """Darken a hex color by the given factor (0.0 to 1.0)"""
@@ -414,6 +453,16 @@ def main():
         st.session_state.sensor_names = loaded_names
     if 'sensor_names' not in st.session_state:
         st.session_state.sensor_names = {}
+    
+    # Load UI state from disk
+    if 'ui_state_loaded' not in st.session_state:
+        ui_state = load_ui_state()
+        for key, value in ui_state.items():
+            if key not in st.session_state:
+                st.session_state[key] = value
+        st.session_state.ui_state_loaded = True
+    
+    # Initialize UI state defaults if not loaded
     if 'temp_axis_min_raw' not in st.session_state:
         st.session_state.temp_axis_min_raw = None
     if 'temp_axis_max_raw' not in st.session_state:
@@ -447,6 +496,7 @@ def main():
                 st.session_state.sensor_data = {}
                 st.session_state.sensor_names = {}
                 save_sensor_data()
+                save_ui_state()
                 st.rerun()
 
         uploaded_files = {}
@@ -490,6 +540,7 @@ def main():
                         st.session_state.sensor_data[i] = processed_data
                         # Save to disk for persistence
                         save_sensor_data()
+                        save_ui_state()
                         st.success(f"{len(processed_data)} records loaded")
                     else:
                         st.error(f"{message}")
@@ -497,6 +548,7 @@ def main():
                             del st.session_state.sensor_data[i]
                             # Save updated state to disk
                             save_sensor_data()
+                            save_ui_state()
             else:
                 # Don't remove data just because no new file is uploaded
                 # The data persists until explicitly cleared or replaced
@@ -519,6 +571,16 @@ def main():
             # Convert dates to datetime objects for slider
             min_datetime = datetime.datetime.combine(min_date, datetime.time.min)
             max_datetime = datetime.datetime.combine(max_date, datetime.time.max)
+            
+            # Use saved time range if available
+            default_start = st.session_state.get('time_range_start', min_datetime)
+            default_end = st.session_state.get('time_range_end', max_datetime)
+            
+            # Ensure defaults are within valid range
+            if default_start < min_datetime:
+                default_start = min_datetime
+            if default_end > max_datetime:
+                default_end = max_datetime
 
             # Style the slider with custom CSS
             st.markdown("""
@@ -550,14 +612,22 @@ def main():
                 "Select time range:",
                 min_value=min_datetime,
                 max_value=max_datetime,
-                value=(min_datetime, max_datetime),
+                value=(default_start, default_end),
                 step=datetime.timedelta(hours=1),
-                format="HH:mm DD/MM/YY"
+                format="HH:mm DD/MM/YY",
+                key="time_range_slider"
             )
 
             # Use datetime objects directly
             start_datetime = selected_range[0]
             end_datetime = selected_range[1]
+            
+            # Save time range to session state
+            if (st.session_state.get('time_range_start') != start_datetime or 
+                st.session_state.get('time_range_end') != end_datetime):
+                st.session_state.time_range_start = start_datetime
+                st.session_state.time_range_end = end_datetime
+                save_ui_state()
 
             time_range = (start_datetime, end_datetime)
 
@@ -573,16 +643,22 @@ def main():
                     sensor_name = st.session_state.sensor_names.get(sensor_id, f"Sensor {sensor_id}")
                     st.write(f"**{sensor_name}**")
 
+                    # Get saved checkbox states, with defaults
+                    temp_default = st.session_state.get(f"temp_{sensor_id}", True)
+                    humidity_default = st.session_state.get(f"humidity_{sensor_id}", False)
+                    
                     visible_series[f"{sensor_id}_temp"] = st.checkbox(
                         "Temperature",
-                        value=True,
-                        key=f"temp_{sensor_id}"
+                        value=temp_default,
+                        key=f"temp_{sensor_id}",
+                        on_change=save_ui_state
                     )
 
                     visible_series[f"{sensor_id}_humidity"] = st.checkbox(
                         "Humidity",
-                        value=False,
-                        key=f"humidity_{sensor_id}"
+                        value=humidity_default,
+                        key=f"humidity_{sensor_id}",
+                        on_change=save_ui_state
                     )
 
             # Create and display raw data chart
@@ -608,11 +684,14 @@ def main():
                 if st.button("Auto", key="auto_raw"):
                     st.session_state.temp_axis_min_raw = None
                     st.session_state.temp_axis_max_raw = None
+                    save_ui_state()
                     st.rerun()
             
-            # Update session state
-            st.session_state.temp_axis_min_raw = temp_min_raw
-            st.session_state.temp_axis_max_raw = temp_max_raw
+            # Update session state and save
+            if st.session_state.temp_axis_min_raw != temp_min_raw or st.session_state.temp_axis_max_raw != temp_max_raw:
+                st.session_state.temp_axis_min_raw = temp_min_raw
+                st.session_state.temp_axis_max_raw = temp_max_raw
+                save_ui_state()
             
             # Prepare temperature axis range
             temp_axis_range_raw = None
@@ -641,16 +720,22 @@ def main():
                     sensor_name = st.session_state.sensor_names.get(sensor_id, f"Sensor {sensor_id}")
                     st.write(f"**{sensor_name}**")
 
+                    # Get saved checkbox states, with defaults
+                    temp_daily_default = st.session_state.get(f"temp_daily_{sensor_id}", True)
+                    humidity_daily_default = st.session_state.get(f"humidity_daily_{sensor_id}", False)
+                    
                     visible_series_daily[f"{sensor_id}_temp_daily"] = st.checkbox(
                         "Avg Temperature",
-                        value=True,
-                        key=f"temp_daily_{sensor_id}"
+                        value=temp_daily_default,
+                        key=f"temp_daily_{sensor_id}",
+                        on_change=save_ui_state
                     )
 
                     visible_series_daily[f"{sensor_id}_humidity_daily"] = st.checkbox(
                         "Avg Humidity",
-                        value=False,
-                        key=f"humidity_daily_{sensor_id}"
+                        value=humidity_daily_default,
+                        key=f"humidity_daily_{sensor_id}",
+                        on_change=save_ui_state
                     )
 
             # Create and display daily averages chart
@@ -676,11 +761,14 @@ def main():
                 if st.button("Auto", key="auto_daily"):
                     st.session_state.temp_axis_min_daily = None
                     st.session_state.temp_axis_max_daily = None
+                    save_ui_state()
                     st.rerun()
             
-            # Update session state
-            st.session_state.temp_axis_min_daily = temp_min_daily
-            st.session_state.temp_axis_max_daily = temp_max_daily
+            # Update session state and save
+            if st.session_state.temp_axis_min_daily != temp_min_daily or st.session_state.temp_axis_max_daily != temp_max_daily:
+                st.session_state.temp_axis_min_daily = temp_min_daily
+                st.session_state.temp_axis_max_daily = temp_max_daily
+                save_ui_state()
             
             # Prepare temperature axis range
             temp_axis_range_daily = None
@@ -692,18 +780,22 @@ def main():
             
             col1, col2 = st.columns(2)
             with col1:
+                start_time_default = st.session_state.get('start_time', datetime.time(0, 0))
                 start_time = st.time_input(
                     "Start Time",
-                    value=datetime.time(0, 0),
+                    value=start_time_default,
                     step=datetime.timedelta(minutes=15),
-                    key="start_time"
+                    key="start_time",
+                    on_change=save_ui_state
                 )
             with col2:
+                end_time_default = st.session_state.get('end_time', datetime.time(23, 45))
                 end_time = st.time_input(
                     "End Time",
-                    value=datetime.time(23, 45),
+                    value=end_time_default,
                     step=datetime.timedelta(minutes=15),
-                    key="end_time"
+                    key="end_time",
+                    on_change=save_ui_state
                 )
             
             # Convert times to interval format for filtering function
