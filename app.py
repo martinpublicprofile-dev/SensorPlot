@@ -160,7 +160,7 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
                 name=f"{sensor_name} - Temperature",
                 line=dict(color=color, width=2),
                 visible=temp_visible,
-                hovertemplate="<b>%{fullData.name}</b><br>" +
+                hovertemplate="<b>" + f"{sensor_name} - Temperature" + "</b><br>" +
                              "Time: %{x|%H:%M}<br>" +
                              "Temperature: %{y:.1f}°C<br>" +
                              "<extra></extra>"
@@ -178,7 +178,7 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
                 name=f"{sensor_name} - Humidity",
                 line=dict(color=humidity_color, width=2),
                 visible=humidity_visible,
-                hovertemplate="<b>%{fullData.name}</b><br>" +
+                hovertemplate="<b>" + f"{sensor_name} - Humidity" + "</b><br>" +
                              "Time: %{x|%H:%M}<br>" +
                              "Humidity: %{y:.1f}%<br>" +
                              "<extra></extra>"
@@ -301,7 +301,7 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
                 marker_color=color,
                 opacity=0.7,
                 visible=temp_visible,
-                hovertemplate="<b>%{fullData.name}</b><br>" +
+                hovertemplate="<b>" + f"{sensor_name} - Avg Temperature" + "</b><br>" +
                              "Date: %{x|%Y/%m/%d}<br>" +
                              "Avg Temperature: %{y:.1f}°C<br>" +
                              "<extra></extra>",
@@ -322,7 +322,7 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
                 marker_color=humidity_color,
                 opacity=0.6,
                 visible=humidity_visible,
-                hovertemplate="<b>%{fullData.name}</b><br>" +
+                hovertemplate="<b>" + f"{sensor_name} - Avg Humidity" + "</b><br>" +
                              "Date: %{x|%Y/%m/%d}<br>" +
                              "Avg Humidity: %{y:.1f}%<br>" +
                              "<extra></extra>",
