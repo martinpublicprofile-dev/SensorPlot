@@ -205,7 +205,7 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
         shapes=[
             dict(
                 type="rect",
-                x0=0, y0=1, x1=0.15, y1=0.97,
+                x0=0, y0=0.95, x1=0.15, y1=0.88,
                 xref="paper", yref="paper",
                 fillcolor="white",
                 line=dict(width=0)
@@ -363,7 +363,7 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
         shapes=[
             dict(
                 type="rect",
-                x0=0, y0=1, x1=0.15, y1=0.97,
+                x0=0, y0=0.95, x1=0.15, y1=0.88,
                 xref="paper", yref="paper",
                 fillcolor="white",
                 line=dict(width=0)
