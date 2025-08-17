@@ -1,30 +1,49 @@
-# Git Commands to Push Bug Fixes
+# Git Commands to Push Latest Updates
 
-## Issues Fixed
+## Recent Updates Added
 
-✅ **packages.txt** - Removed comment causing deployment error  
-✅ **streamlit_app.py** - Fixed session state initialization issue  
+✅ **Comprehensive Persistence System** - All UI settings now persist across browser refreshes  
+✅ **Manual Axis Controls** - Temperature axis min/max controls with Auto reset buttons  
+✅ **Fixed Humidity Range** - Humidity axis always shows 0-100% (no auto-scaling)  
+✅ **Time Range Persistence** - Time slider selections automatically saved and restored  
+✅ **Checkbox State Memory** - All visibility toggles remembered across sessions  
+✅ **Error Fix** - Fixed AttributeError for None time values  
 
 ## Commands to Run
 
+**Step 1: Clear Git lock (if needed)**
+```bash
+rm -f .git/index.lock
+```
+
+**Step 2: Add and commit changes**
 ```bash
 # Add all changes  
 git add .
 
-# Commit the fixes
-git commit -m "Fix Streamlit Cloud deployment errors
+# Commit the updates
+git commit -m "Add comprehensive persistence system for all UI settings
 
-- Remove comment from packages.txt causing package installation error
-- Fix session state initialization in streamlit_app.py
-- Ensure proper module loading for cloud deployment"
+- All axis settings (min/max temperature ranges) now persist across refreshes
+- Time range slider selections automatically saved and restored  
+- All checkbox states (temperature/humidity visibility) remembered
+- Time-of-day range settings for averages calculations persist
+- Fixed humidity axis to always show 0-100% scale (no auto-scaling)
+- Added manual temperature axis controls with Auto reset buttons
+- UI state automatically saves on every user interaction
+- Fixed AttributeError for None time values with proper defaults"
+```
 
-# Push to GitHub
+**Step 3: Push to GitHub**
+```bash
 git push origin main
 ```
 
-## What Was Fixed
+## What's New
 
-1. **packages.txt Error**: Removed the comment `# System packages needed for deployment` that was being interpreted as package names
-2. **Session State Error**: Changed streamlit_app.py to import the app module properly instead of calling main() directly
+1. **Complete UI Persistence**: Every setting (axis ranges, time selections, checkboxes) now persists indefinitely
+2. **Manual Temperature Axis Control**: Set exact min/max values or click "Auto" to reset to automatic scaling
+3. **Fixed Humidity Scale**: Always 0-100%, no more auto-scaling that could confuse readings
+4. **Enhanced User Experience**: All interactions are automatically saved - no more losing settings on refresh
 
-These fixes will resolve the Streamlit Cloud deployment errors you encountered.
+Your sensor data visualization app now maintains all user preferences across browser sessions!
