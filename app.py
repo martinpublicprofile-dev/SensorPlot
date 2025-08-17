@@ -642,13 +642,24 @@ def main():
             # Time range selection with slider
             st.markdown("<h3 style='color: #888888;'>Time Range Selection</h3>", unsafe_allow_html=True)
 
-            # Convert dates to datetime objects for slider
-            min_datetime = datetime.datetime.combine(min_date, datetime.time.min)
-            max_datetime = datetime.datetime.combine(max_date, datetime.time.max)
+            # Convert dates to datetime objects for slider - align to daily boundaries at 0:00
+            min_datetime = datetime.datetime.combine(min_date, datetime.time.min)  # Start of first day
+            max_datetime = datetime.datetime.combine(max_date, datetime.time.min)  # Start of last day
             
-            # Use saved time range if available
-            default_start = st.session_state.get('time_range_start', min_datetime)
-            default_end = st.session_state.get('time_range_end', max_datetime)
+            # Use saved time range if available, but align to daily boundaries
+            saved_start = st.session_state.get('time_range_start')
+            saved_end = st.session_state.get('time_range_end')
+            
+            # If we have saved values, align them to daily boundaries (0:00)
+            if saved_start:
+                default_start = datetime.datetime.combine(saved_start.date(), datetime.time.min)
+            else:
+                default_start = min_datetime
+                
+            if saved_end:
+                default_end = datetime.datetime.combine(saved_end.date(), datetime.time.min)
+            else:
+                default_end = max_datetime
             
             # Ensure defaults are within valid range
             if default_start < min_datetime:
@@ -687,14 +698,16 @@ def main():
                 min_value=min_datetime,
                 max_value=max_datetime,
                 value=(default_start, default_end),
-                step=datetime.timedelta(hours=1),
-                format="HH:mm DD/MM/YY",
+                step=datetime.timedelta(days=1),
+                format="DD/MM/YY",
                 key="time_range_slider"
             )
 
-            # Use datetime objects directly
-            start_datetime = selected_range[0]
-            end_datetime = selected_range[1]
+            # Use datetime objects directly - ensure they represent full days
+            # Start datetime is the beginning of the selected start day (0:00)
+            start_datetime = datetime.datetime.combine(selected_range[0].date(), datetime.time.min)
+            # End datetime is the end of the selected end day (23:59:59.999999)
+            end_datetime = datetime.datetime.combine(selected_range[1].date(), datetime.time.max)
             
             # Save time range to session state
             if (st.session_state.get('time_range_start') != start_datetime or 
