@@ -134,8 +134,8 @@ def process_csv_data(uploaded_file, sensor_id):
 def create_dual_axis_chart(data_dict, visible_series, time_range):
     """Create dual-axis chart with temperature and humidity data"""
 
-    # Create subplot with secondary y-axis
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    # Create figure
+    fig = go.Figure()
 
     # Filter data by time range if specified
     filtered_data = {}
@@ -163,9 +163,9 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
                 hovertemplate="<b>" + f"{sensor_name} - Temperature" + "</b><br>" +
                              "Time: %{x|%H:%M}<br>" +
                              "Temperature: %{y:.1f}°C<br>" +
-                             "<extra></extra>"
-            ),
-            secondary_y=False
+                             "<extra></extra>",
+                yaxis="y"
+            )
         )
 
         # Humidity line
@@ -181,9 +181,9 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
                 hovertemplate="<b>" + f"{sensor_name} - Humidity" + "</b><br>" +
                              "Time: %{x|%H:%M}<br>" +
                              "Humidity: %{y:.1f}%<br>" +
-                             "<extra></extra>"
-            ),
-            secondary_y=True
+                             "<extra></extra>",
+                yaxis="y2"
+            )
         )
 
     # Update layout for minimalist design
@@ -215,25 +215,25 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
         )
     )
 
-    # Update y-axes with hairline grids
-    fig.update_yaxes(
-        title_text="Temperature (°C)",
-        showgrid=True,
-        gridwidth=0.3,
-        gridcolor='#E0E0E0',
-        showline=False,
-        zeroline=False,
-        side='left',
-        secondary_y=False
-    )
-
-    fig.update_yaxes(
-        title_text="Humidity (%)",
-        showgrid=False,
-        showline=False,
-        zeroline=False,
-        side='right',
-        secondary_y=True
+    # Configure dual y-axes manually
+    fig.update_layout(
+        yaxis=dict(
+            title="Temperature (°C)",
+            showgrid=True,
+            gridwidth=0.3,
+            gridcolor='#E0E0E0',
+            showline=False,
+            zeroline=False,
+            side='left'
+        ),
+        yaxis2=dict(
+            title="Humidity (%)",
+            showgrid=False,
+            showline=False,
+            zeroline=False,
+            side='right',
+            overlaying='y'
+        )
     )
 
     return fig
@@ -556,7 +556,7 @@ def main():
                     visible_series,
                     time_range
                 )
-                st.plotly_chart(chart, use_container_width=True)
+                st.plotly_chart(chart, use_container_width=True, config={'displayModeBar': False, 'showTips': False})
 
             except Exception as e:
                 st.error(f"Error creating raw data chart: {str(e)}")
@@ -617,7 +617,7 @@ def main():
                     time_range,
                     time_of_day_range
                 )
-                st.plotly_chart(daily_chart, use_container_width=True)
+                st.plotly_chart(daily_chart, use_container_width=True, config={'displayModeBar': False, 'showTips': False})
 
             except Exception as e:
                 st.error(f"Error creating daily averages chart: {str(e)}")
