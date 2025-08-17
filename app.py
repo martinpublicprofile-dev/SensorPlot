@@ -131,7 +131,7 @@ def process_csv_data(uploaded_file, sensor_id):
     except Exception as e:
         return None, f"Error processing CSV: {str(e)}"
 
-def create_dual_axis_chart(data_dict, visible_series, time_range):
+def create_dual_axis_chart(data_dict, visible_series, time_range, temp_axis_range=None):
     """Create dual-axis chart with temperature and humidity data"""
 
     # Create subplot with secondary y-axis
@@ -222,14 +222,22 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
     )
 
     # Update y-axes with hairline grids
-    fig.update_yaxes(
+    temp_axis_config = dict(
         title_text="Temperature (°C)",
         showgrid=True,
         gridwidth=0.3,
         gridcolor='#E0E0E0',
         showline=False,
         zeroline=False,
-        side='left',
+        side='left'
+    )
+    
+    # Add temperature axis range if specified
+    if temp_axis_range and temp_axis_range[0] is not None and temp_axis_range[1] is not None:
+        temp_axis_config['range'] = [temp_axis_range[0], temp_axis_range[1]]
+    
+    fig.update_yaxes(
+        **temp_axis_config,
         secondary_y=False
     )
 
@@ -239,12 +247,13 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
         showline=False,
         zeroline=False,
         side='right',
+        range=[0, 100],  # Fixed 0-100% range for humidity
         secondary_y=True
     )
 
     return fig
 
-def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_day_range=None):
+def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_day_range=None, temp_axis_range=None):
     """Create dual-axis chart with daily average temperature and humidity data"""
 
     # Create subplot with secondary y-axis
@@ -365,14 +374,22 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
     )
 
     # Update y-axes with hairline grids
-    fig.update_yaxes(
+    temp_axis_config_daily = dict(
         title_text="Temperature (°C)",
         showgrid=True,
         gridwidth=0.3,
         gridcolor='#E0E0E0',
         showline=False,
         zeroline=False,
-        side='left',
+        side='left'
+    )
+    
+    # Add temperature axis range if specified
+    if temp_axis_range and temp_axis_range[0] is not None and temp_axis_range[1] is not None:
+        temp_axis_config_daily['range'] = [temp_axis_range[0], temp_axis_range[1]]
+    
+    fig.update_yaxes(
+        **temp_axis_config_daily,
         secondary_y=False
     )
 
@@ -382,6 +399,7 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
         showline=False,
         zeroline=False,
         side='right',
+        range=[0, 100],  # Fixed 0-100% range for humidity
         secondary_y=True
     )
 
@@ -396,6 +414,14 @@ def main():
         st.session_state.sensor_names = loaded_names
     if 'sensor_names' not in st.session_state:
         st.session_state.sensor_names = {}
+    if 'temp_axis_min_raw' not in st.session_state:
+        st.session_state.temp_axis_min_raw = None
+    if 'temp_axis_max_raw' not in st.session_state:
+        st.session_state.temp_axis_max_raw = None
+    if 'temp_axis_min_daily' not in st.session_state:
+        st.session_state.temp_axis_min_daily = None
+    if 'temp_axis_max_daily' not in st.session_state:
+        st.session_state.temp_axis_max_daily = None
     
     st.markdown("<h1 style='color: #888888;'>Sensor Data Visualization</h1>", unsafe_allow_html=True)
     st.markdown("Upload CSV files containing temperature and humidity sensor data for visualization")
@@ -561,12 +587,44 @@ def main():
 
             # Create and display raw data chart
             st.markdown("<h3 style='color: #888888;'>Raw Sensor Data</h3>", unsafe_allow_html=True)
+            
+            # Temperature axis controls for raw data
+            col1, col2, col3 = st.columns([1, 1, 1])
+            with col1:
+                temp_min_raw = st.number_input(
+                    "Min Temperature (°C)",
+                    value=st.session_state.temp_axis_min_raw,
+                    step=1.0,
+                    key="temp_min_raw_input"
+                )
+            with col2:
+                temp_max_raw = st.number_input(
+                    "Max Temperature (°C)",
+                    value=st.session_state.temp_axis_max_raw,
+                    step=1.0,
+                    key="temp_max_raw_input"
+                )
+            with col3:
+                if st.button("Auto", key="auto_raw"):
+                    st.session_state.temp_axis_min_raw = None
+                    st.session_state.temp_axis_max_raw = None
+                    st.rerun()
+            
+            # Update session state
+            st.session_state.temp_axis_min_raw = temp_min_raw
+            st.session_state.temp_axis_max_raw = temp_max_raw
+            
+            # Prepare temperature axis range
+            temp_axis_range_raw = None
+            if temp_min_raw is not None and temp_max_raw is not None:
+                temp_axis_range_raw = [temp_min_raw, temp_max_raw]
 
             try:
                 chart = create_dual_axis_chart(
                     st.session_state.sensor_data,
                     visible_series,
-                    time_range
+                    time_range,
+                    temp_axis_range_raw
                 )
                 st.plotly_chart(chart, use_container_width=True)
 
@@ -598,6 +656,37 @@ def main():
             # Create and display daily averages chart
             st.markdown("<h3 style='color: #888888;'>Daily Averages</h3>", unsafe_allow_html=True)
             
+            # Temperature axis controls for daily averages
+            col1, col2, col3 = st.columns([1, 1, 1])
+            with col1:
+                temp_min_daily = st.number_input(
+                    "Min Temperature (°C)",
+                    value=st.session_state.temp_axis_min_daily,
+                    step=1.0,
+                    key="temp_min_daily_input"
+                )
+            with col2:
+                temp_max_daily = st.number_input(
+                    "Max Temperature (°C)",
+                    value=st.session_state.temp_axis_max_daily,
+                    step=1.0,
+                    key="temp_max_daily_input"
+                )
+            with col3:
+                if st.button("Auto", key="auto_daily"):
+                    st.session_state.temp_axis_min_daily = None
+                    st.session_state.temp_axis_max_daily = None
+                    st.rerun()
+            
+            # Update session state
+            st.session_state.temp_axis_min_daily = temp_min_daily
+            st.session_state.temp_axis_max_daily = temp_max_daily
+            
+            # Prepare temperature axis range
+            temp_axis_range_daily = None
+            if temp_min_daily is not None and temp_max_daily is not None:
+                temp_axis_range_daily = [temp_min_daily, temp_max_daily]
+            
             # Time of day selection for averages calculation
             st.markdown('<span style="color: #888888; font-size: 14px; font-weight: bold;">Time of Day Range for Averages</span>', unsafe_allow_html=True)
             
@@ -627,7 +716,8 @@ def main():
                     st.session_state.sensor_data,
                     visible_series_daily,
                     time_range,
-                    time_of_day_range
+                    time_of_day_range,
+                    temp_axis_range_daily
                 )
                 st.plotly_chart(daily_chart, use_container_width=True)
 
