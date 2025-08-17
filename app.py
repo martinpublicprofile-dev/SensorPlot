@@ -134,8 +134,8 @@ def process_csv_data(uploaded_file, sensor_id):
 def create_dual_axis_chart(data_dict, visible_series, time_range):
     """Create dual-axis chart with temperature and humidity data"""
 
-    # Create figure
-    fig = go.Figure()
+    # Create subplot with secondary y-axis
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     # Filter data by time range if specified
     filtered_data = {}
@@ -163,9 +163,9 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
                 hovertemplate="<b>" + f"{sensor_name} - Temperature" + "</b><br>" +
                              "Time: %{x|%H:%M}<br>" +
                              "Temperature: %{y:.1f}°C<br>" +
-                             "<extra></extra>",
-                yaxis="y"
-            )
+                             "<extra></extra>"
+            ),
+            secondary_y=False
         )
 
         # Humidity line
@@ -181,21 +181,27 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
                 hovertemplate="<b>" + f"{sensor_name} - Humidity" + "</b><br>" +
                              "Time: %{x|%H:%M}<br>" +
                              "Humidity: %{y:.1f}%<br>" +
-                             "<extra></extra>",
-                yaxis="y2"
-            )
+                             "<extra></extra>"
+            ),
+            secondary_y=True
         )
 
     # Update layout for minimalist design
     fig.update_layout(
         title=None,
-        showlegend=False,
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        ),
         plot_bgcolor='white',
         paper_bgcolor='white',
-        margin=dict(l=0, r=0, t=20, b=0),
+        margin=dict(l=0, r=0, t=40, b=0),
         height=600,
-        hovermode='x unified',
-        annotations=[]
+        hovermode='x unified'
     )
 
     # Update x-axis with day separators
@@ -215,25 +221,25 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
         )
     )
 
-    # Configure dual y-axes manually
-    fig.update_layout(
-        yaxis=dict(
-            title="Temperature (°C)",
-            showgrid=True,
-            gridwidth=0.3,
-            gridcolor='#E0E0E0',
-            showline=False,
-            zeroline=False,
-            side='left'
-        ),
-        yaxis2=dict(
-            title="Humidity (%)",
-            showgrid=False,
-            showline=False,
-            zeroline=False,
-            side='right',
-            overlaying='y'
-        )
+    # Update y-axes with hairline grids
+    fig.update_yaxes(
+        title_text="Temperature (°C)",
+        showgrid=True,
+        gridwidth=0.3,
+        gridcolor='#E0E0E0',
+        showline=False,
+        zeroline=False,
+        side='left',
+        secondary_y=False
+    )
+
+    fig.update_yaxes(
+        title_text="Humidity (%)",
+        showgrid=False,
+        showline=False,
+        zeroline=False,
+        side='right',
+        secondary_y=True
     )
 
     return fig
@@ -329,16 +335,22 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
     # Update layout for minimalist design
     fig.update_layout(
         title=None,
-        showlegend=False,
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        ),
         plot_bgcolor='white',
         paper_bgcolor='white',
-        margin=dict(l=0, r=0, t=20, b=0),
+        margin=dict(l=0, r=0, t=40, b=0),
         height=400,
         hovermode='x unified',
         barmode='group',
         bargap=0.1,
-        bargroupgap=0.1,
-        annotations=[]
+        bargroupgap=0.1
     )
 
     # Update x-axis with day separators
@@ -415,7 +427,7 @@ def main():
         for i in range(1, 5):
             # Check if this sensor has loaded data
             has_data = i in st.session_state.sensor_data
-            data_status = f" ({len(st.session_state.sensor_data[i])} records)" if has_data else ""
+            data_status = f" ✅ ({len(st.session_state.sensor_data[i])} records)" if has_data else ""
             
             # Sensor name input as subheader - use saved name if available
             default_name = st.session_state.sensor_names.get(i, f"Sensor {i}")
@@ -556,7 +568,7 @@ def main():
                     visible_series,
                     time_range
                 )
-                st.plotly_chart(chart, use_container_width=True, config={'displayModeBar': False, 'showTips': False})
+                st.plotly_chart(chart, use_container_width=True)
 
             except Exception as e:
                 st.error(f"Error creating raw data chart: {str(e)}")
@@ -617,7 +629,7 @@ def main():
                     time_range,
                     time_of_day_range
                 )
-                st.plotly_chart(daily_chart, use_container_width=True, config={'displayModeBar': False, 'showTips': False})
+                st.plotly_chart(daily_chart, use_container_width=True)
 
             except Exception as e:
                 st.error(f"Error creating daily averages chart: {str(e)}")
