@@ -425,21 +425,33 @@ def main():
 
         uploaded_files = {}
         for i in range(1, 5):
-            st.subheader(f"Sensor {i}")
+            # Check if this sensor has loaded data
+            has_data = i in st.session_state.sensor_data
+            data_status = f" ✅ ({len(st.session_state.sensor_data[i])} records)" if has_data else ""
+            
+            st.subheader(f"Sensor {i}{data_status}")
 
             # File upload
             uploaded_file = st.file_uploader(
                 f"Choose CSV file for Sensor {i}",
                 type=['csv'],
-                key=f"file_{i}"
+                key=f"file_{i}",
+                help="Upload a new file to replace existing data" if has_data else None
             )
 
-            # Sensor name input
+            # Sensor name input - use saved name if available
+            default_name = st.session_state.sensor_names.get(i, f"Sensor {i}")
             sensor_name = st.text_input(
                 f"Sensor {i} Name",
-                value=f"Sensor {i}",
+                value=default_name,
                 key=f"name_{i}"
             )
+            
+            # Update the name in session state whenever it changes
+            if sensor_name != default_name:
+                st.session_state.sensor_names[i] = sensor_name
+                if has_data:  # Only save if we have data
+                    save_sensor_data()
 
             if uploaded_file is not None:
                 uploaded_files[i] = uploaded_file
@@ -461,11 +473,9 @@ def main():
                             # Save updated state to disk
                             save_sensor_data()
             else:
-                # Remove data if file is removed
-                if i in st.session_state.sensor_data:
-                    del st.session_state.sensor_data[i]
-                    # Save updated state to disk
-                    save_sensor_data()
+                # Don't remove data just because no new file is uploaded
+                # The data persists until explicitly cleared or replaced
+                pass
 
     # Main content area
     if st.session_state.sensor_data:
