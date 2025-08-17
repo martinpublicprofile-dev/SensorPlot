@@ -25,7 +25,7 @@ PASTEL_COLORS = [
     "#FF9999",  # Light red
     "#99CCFF",  # Light blue
     "#99FF99",  # Light green
-    "#808080"   # 50% grey
+    "#B3B3B3"   # 30% grey
 ]
 
 # File paths for persistent storage
