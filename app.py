@@ -290,7 +290,7 @@ def create_dual_axis_chart(data_dict, visible_series, time_range, temp_axis_rang
         gridcolor='#E0E0E0',
         showline=False,
         zeroline=False,
-        tickformat='%d/%m',
+        tickformat='%d/%b',
         dtick='D1',
         tickangle=-45,
         minor=dict(
