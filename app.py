@@ -292,7 +292,6 @@ def create_dual_axis_chart(data_dict, visible_series, time_range, temp_axis_rang
         zeroline=False,
         tickformat='%d/%m',
         dtick='D1',
-        tickangle=45,
         minor=dict(
             dtick='D1',
             showgrid=True,
@@ -450,8 +449,7 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
         showline=False,
         zeroline=False,
         tickformat='%d/%m',
-        dtick='D1',
-        tickangle=45
+        dtick='D1'
     )
 
     # Update y-axes with hairline grids
