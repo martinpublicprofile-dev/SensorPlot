@@ -35,9 +35,22 @@ DateTime,Temperature,TempComfort,Humidity,HumidityComfort
 
 ### Streamlit Cloud
 
-1. Connect your GitHub repository to [Streamlit Cloud](https://streamlit.io/cloud)
-2. Select `app.py` as your main file
-3. The app will automatically use the configuration from `.streamlit/config.toml`
+1. **Push to GitHub**: Ensure all files are committed and pushed to your GitHub repository
+2. **Connect to Streamlit Cloud**: Go to [Streamlit Cloud](https://streamlit.io/cloud) and connect your GitHub repo
+3. **Configure deployment**: 
+   - Set main file path: `streamlit_app.py`
+   - Python version: 3.11
+   - Dependencies will be automatically detected from `pyproject.toml`
+4. **Deploy**: Click deploy and your app will be live!
+
+### Manual Requirements File for Streamlit Cloud
+
+If Streamlit Cloud needs a `requirements.txt` file, create one with these contents:
+```txt
+streamlit>=1.48.0
+pandas>=2.3.1
+plotly>=6.2.0
+```
 
 ### Local Development
 
@@ -45,7 +58,10 @@ DateTime,Temperature,TempComfort,Humidity,HumidityComfort
 # Install dependencies
 pip install streamlit pandas plotly
 
-# Run the application
+# Run the application (main entry point)
+streamlit run streamlit_app.py --server.port 8000 --server.address 0.0.0.0
+
+# Alternative: run directly with app.py
 streamlit run app.py
 ```
 
