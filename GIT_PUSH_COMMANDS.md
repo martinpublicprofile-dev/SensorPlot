@@ -2,6 +2,7 @@
 
 ## Recent Updates Added
 
+✅ **Mobile App Name** - Changed app name from "Streamlit" to "Sensor Data" for mobile home screen  
 ✅ **Password Protection** - Secure access control requiring "sensordata" password  
 ✅ **Comprehensive Persistence System** - All UI settings now persist across browser refreshes  
 ✅ **Manual Axis Controls** - Temperature axis min/max controls with Auto reset buttons  
@@ -23,8 +24,9 @@ rm -f .git/index.lock
 git add .
 
 # Commit the updates
-git commit -m "Add password protection and comprehensive persistence system
+git commit -m "Update app name and add password protection with persistence system
 
+- Changed app name from 'Streamlit' to 'Sensor Data' for mobile home screen installation
 - Added secure password protection requiring 'sensordata' for access
 - Clean login interface with professional design and logout functionality
 - All axis settings (min/max temperature ranges) now persist across refreshes
@@ -44,10 +46,11 @@ git push origin main
 
 ## What's New
 
-1. **Password Protection**: Secure access with "sensordata" password - clean login screen with logout functionality
-2. **Complete UI Persistence**: Every setting (axis ranges, time selections, checkboxes) now persists indefinitely
-3. **Manual Temperature Axis Control**: Set exact min/max values or click "Auto" to reset to automatic scaling
-4. **Fixed Humidity Scale**: Always 0-100%, no more auto-scaling that could confuse readings
-5. **Enhanced User Experience**: All interactions are automatically saved - no more losing settings on refresh
+1. **Mobile App Name**: App now installs as "Sensor Data" instead of "Streamlit" on mobile home screens
+2. **Password Protection**: Secure access with "sensordata" password - clean login screen with logout functionality
+3. **Complete UI Persistence**: Every setting (axis ranges, time selections, checkboxes) now persists indefinitely
+4. **Manual Temperature Axis Control**: Set exact min/max values or click "Auto" to reset to automatic scaling
+5. **Fixed Humidity Scale**: Always 0-100%, no more auto-scaling that could confuse readings
+6. **Enhanced User Experience**: All interactions are automatically saved - no more losing settings on refresh
 
-Your sensor data visualization app now has secure access control and maintains all user preferences across browser sessions!
+Your sensor data visualization app now has proper mobile branding, secure access control, and maintains all user preferences across browser sessions!
