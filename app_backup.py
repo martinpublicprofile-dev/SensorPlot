@@ -6,7 +6,6 @@ import datetime
 from io import StringIO
 import pickle
 import os
-import json
 
 # Set page configuration
 st.set_page_config(
@@ -26,33 +25,8 @@ st.markdown("""
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#FF9999">
     <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiU2Vuc29yIERhdGEiLCJzaG9ydF9uYW1lIjoiU2Vuc29yIERhdGEiLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsInRoZW1lX2NvbG9yIjoiI0ZGOTk5OSIsImJhY2tncm91bmRfY29sb3IiOiIjZmZmZmZmIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1qUWlJR2hsYVdkb2REMGlNalFpSUhabGNuTnBiMjQ5SWpFdU1TSWdlRzFzYm5NOUltaDBkSEE2THk5M2QzY3Vkek11YjNKbkx6SXdNREF2YzNabklqNEtJQ0E4Y21WamRDQjNhV1IwYUQwaU1qUWlJR2hsYVdkb2REMGlNalFpSUdacGJHdzlJaU5HUmprelF6a2lMejRLSUNBOGRHVjRkQ0I0UFNJeE1pSWdlVDBpTVRVaUlHWnBiR3c5SWlOeklpQm1iMjUwTFdaaGJXbHNlVDBpYkc5bmFXTnZaU3c4TDNSbGVIUStDaUE4TDNOMlp6NEsiLCJzaXplcyI6IjI0eDI0IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19">
+</head>
 """, unsafe_allow_html=True)
-
-# Add the proper manifest link for PWA installation
-manifest_json = json.dumps({
-    "name": "Sensor Data",
-    "short_name": "Sensor Data",
-    "description": "Temperature and humidity sensor data visualization",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#FF9999",
-    "scope": "/",
-    "icons": [
-        {
-            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gIDxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjRkY5OTk5Ii8+ICA8dGV4dCB4PSI5NiIgeT0iMTIwIiBmaWxsPSIjZmZmIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNDgiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5OKPC90ZXh0Pjwvc3ZnPg==",
-            "sizes": "192x192",
-            "type": "image/svg+xml"
-        },
-        {
-            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gIDxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSIjRkY5OTk5Ii8+ICA8dGV4dCB4PSIyNTYiIHk9IjMyMCIgZmlsbD0iI2ZmZiIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyOCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfk4o8L3RleHQ+PC9zdmc+",
-            "sizes": "512x512",
-            "type": "image/svg+xml"
-        }
-    ]
-}).replace('"', '%22').replace(' ', '%20').replace('\n', '')
-
-st.markdown(f'<link rel="manifest" href="data:application/json,{manifest_json}">', unsafe_allow_html=True)
 
 # Initialize session state
 if 'sensor_data' not in st.session_state:
