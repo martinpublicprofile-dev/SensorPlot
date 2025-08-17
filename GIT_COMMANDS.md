@@ -1,56 +1,38 @@
-# Git Commands to Push to GitHub
+# Quick Git Commands for GitHub Push
 
-## Files Ready for Deployment
+## Run these commands in the Replit Shell:
 
-I've prepared all the files for Streamlit Cloud deployment. The requirements file has been renamed and everything is ready.
-
-## Commands to Run
-
-Copy and paste these commands in your terminal:
-
+### 1. Initialize and commit your code:
 ```bash
-# 1. Check current status
-git status
-
-# 2. Add all changes
+git init
 git add .
-
-# 3. Commit with descriptive message
-git commit -m "Prepare Streamlit app for cloud deployment
-
-- Add streamlit_app.py as main entry point for Streamlit Cloud
-- Update port configuration to 8000 for deployment  
-- Add requirements.txt with all dependencies
-- Update documentation with deployment instructions
-- Add deployment guides and checklists
-- Configure .streamlit/config.toml for cloud deployment"
-
-# 4. Push to GitHub
-git push origin main
+git commit -m "Initial commit: Sensor data visualization app with comprehensive persistence"
 ```
 
-## Alternative Single Command
-
-If you prefer a single commit message:
+### 2. Connect to your GitHub repository:
+**First, create a new repository on GitHub.com, then replace YOUR_USERNAME and YOUR_REPO_NAME below:**
 
 ```bash
-git add . && git commit -m "Deploy-ready: Add streamlit_app.py, update config, add requirements.txt" && git push origin main
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+git branch -M main
+git push -u origin main
 ```
 
-## What's Included in This Push
+## Example with actual repository name:
+```bash
+git remote add origin https://github.com/johndoe/sensor-data-visualization.git
+git branch -M main  
+git push -u origin main
+```
 
-✅ **streamlit_app.py** - Entry point for Streamlit Cloud  
-✅ **requirements.txt** - Dependencies for cloud deployment  
-✅ **Updated .streamlit/config.toml** - Port 8000 configuration  
-✅ **Updated README.md** - Deployment instructions  
-✅ **DEPLOYMENT_INSTRUCTIONS.md** - Detailed setup guide  
-✅ **GITHUB_DEPLOYMENT_CHECKLIST.md** - Complete checklist  
+## If you get authentication errors:
+You may need to use a Personal Access Token instead of password. 
+Go to GitHub Settings > Developer settings > Personal access tokens to create one.
 
-## After Pushing
-
-1. Go to [share.streamlit.io](https://share.streamlit.io)
-2. Connect your GitHub repository
-3. Set main file: `streamlit_app.py`
-4. Deploy!
-
-Your sensor data visualization app will be live on Streamlit Cloud!
+## Your app includes:
+- Complete sensor data visualization with dual-axis charts
+- Advanced persistence system for all user settings
+- Manual temperature axis controls with fixed humidity range
+- Daily averages with time-of-day filtering
+- Support for up to 4 sensor CSV uploads
+- Production-ready for Streamlit Cloud deployment
