@@ -9,7 +9,7 @@ import os
 
 # Set page configuration
 st.set_page_config(
-    page_title="Sensor Data Visualization",
+    page_title="Sensor Data",
     layout="wide",
     initial_sidebar_state="expanded"
 )
