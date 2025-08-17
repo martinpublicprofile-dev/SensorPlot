@@ -427,7 +427,7 @@ def main():
         for i in range(1, 5):
             # Check if this sensor has loaded data
             has_data = i in st.session_state.sensor_data
-            data_status = f" ✅ ({len(st.session_state.sensor_data[i])} records)" if has_data else ""
+            data_status = f" ({len(st.session_state.sensor_data[i])} records)" if has_data else ""
             
             # Sensor name input as subheader - use saved name if available
             default_name = st.session_state.sensor_names.get(i, f"Sensor {i}")
