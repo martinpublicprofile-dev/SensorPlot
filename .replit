@@ -29,8 +29,8 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "streamlit run streamlit_app.py --server.port 8000 --server.address 0.0.0.0"
-waitForPort = 8000
+args = "streamlit run streamlit_app.py --server.port 8501"
+waitForPort = 8501
 
 [[ports]]
 localPort = 5000

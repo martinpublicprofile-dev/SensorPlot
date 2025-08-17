@@ -1,3 +1,3 @@
 # This file is required for Streamlit Cloud deployment
-# It imports the app module to run the complete application
+# It simply imports the app module which will execute the Streamlit code
 import app

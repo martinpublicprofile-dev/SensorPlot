@@ -59,7 +59,7 @@ plotly>=6.2.0
 pip install streamlit pandas plotly
 
 # Run the application (main entry point)
-streamlit run streamlit_app.py --server.port 8000 --server.address 0.0.0.0
+streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0
 
 # Alternative: run directly with app.py
 streamlit run app.py
