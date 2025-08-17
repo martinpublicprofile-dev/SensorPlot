@@ -429,22 +429,13 @@ def main():
             has_data = i in st.session_state.sensor_data
             data_status = f" ✅ ({len(st.session_state.sensor_data[i])} records)" if has_data else ""
             
-            st.subheader(f"Sensor {i}{data_status}")
-
-            # File upload
-            uploaded_file = st.file_uploader(
-                f"Choose CSV file for Sensor {i}",
-                type=['csv'],
-                key=f"file_{i}",
-                help="Upload a new file to replace existing data" if has_data else None
-            )
-
-            # Sensor name input - use saved name if available
+            # Sensor name input as subheader - use saved name if available
             default_name = st.session_state.sensor_names.get(i, f"Sensor {i}")
             sensor_name = st.text_input(
-                f"Sensor {i} Name",
+                f"Name{data_status}",
                 value=default_name,
-                key=f"name_{i}"
+                key=f"name_{i}",
+                placeholder=f"Enter name for Sensor {i}"
             )
             
             # Update the name in session state whenever it changes
@@ -452,6 +443,14 @@ def main():
                 st.session_state.sensor_names[i] = sensor_name
                 if has_data:  # Only save if we have data
                     save_sensor_data()
+
+            # File upload
+            uploaded_file = st.file_uploader(
+                f"Choose CSV file",
+                type=['csv'],
+                key=f"file_{i}",
+                help="Upload a new file to replace existing data" if has_data else None
+            )
 
             if uploaded_file is not None:
                 uploaded_files[i] = uploaded_file
