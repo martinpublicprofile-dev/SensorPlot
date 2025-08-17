@@ -1,0 +1,36 @@
+{
+  "name": "Sensor Data",
+  "short_name": "Sensor Data",
+  "description": "Temperature and humidity sensor data visualization",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#FF9999",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IiNGRjk5OTkiLz4KICA8dGV4dCB4PSIxMiIgeT0iMTUiIGZpbGw9IiNzIiBmb250LWZhbWlseT0ibG9naWNvbmUiPuKckjwvdGV4dD4KPC9zdmc+",
+      "sizes": "24x24",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIGZpbGw9IiNGRjk5OTkiLz4KICA8dGV4dCB4PSIyNCIgeT0iMzAiIGZpbGw9IiNzIiBmb250LWZhbWlseT0ibG9naWNvbmUiIGZvbnQtc2l6ZT0iMjQiPuKckjwvdGV4dD4KPC9zdmc+",
+      "sizes": "48x48",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIGZpbGw9IiNGRjk5OTkiLz4KICA8dGV4dCB4PSI0OCIgeT0iNjAiIGZpbGw9IiNzIiBmb250LWZhbWlseT0ibG9naWNvbmUiIGZvbnQtc2l6ZT0iNDgiPuKckjwvdGV4dD4KPC9zdmc+",
+      "sizes": "96x96",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjRkY5OTk5Ii8+CiAgPHRleHQgeD0iOTYiIHk9IjEyMCIgZmlsbD0iI3MiIGZvbnQtZmFtaWx5PSJsb2dpY29uZSIgZm9udC1zaXplPSI5NiI+4pySPC90ZXh0Pgo8L3N2Zz4=",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSIjRkY5OTk5Ii8+CiAgPHRleHQgeD0iMjU2IiB5PSIzMjAiIGZpbGw9IiNzIiBmb250LWZhbWlseT0ibG9naWNvbmUiIGZvbnQtc2l6ZT0iMjU2Ij7inJI8L3RleHQ+Cjwvc3ZnPg==",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

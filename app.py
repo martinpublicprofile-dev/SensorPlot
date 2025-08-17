@@ -10,9 +10,23 @@ import os
 # Set page configuration
 st.set_page_config(
     page_title="Sensor Data",
+    page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Add PWA meta tags for proper mobile app installation
+st.markdown("""
+<head>
+    <meta name="application-name" content="Sensor Data">
+    <meta name="apple-mobile-web-app-title" content="Sensor Data">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#FF9999">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiU2Vuc29yIERhdGEiLCJzaG9ydF9uYW1lIjoiU2Vuc29yIERhdGEiLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsInRoZW1lX2NvbG9yIjoiI0ZGOTk5OSIsImJhY2tncm91bmRfY29sb3IiOiIjZmZmZmZmIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1qUWlJR2hsYVdkb2REMGlNalFpSUhabGNuTnBiMjQ5SWpFdU1TSWdlRzFzYm5NOUltaDBkSEE2THk5M2QzY3Vkek11YjNKbkx6SXdNREF2YzNabklqNEtJQ0E4Y21WamRDQjNhV1IwYUQwaU1qUWlJR2hsYVdkb2REMGlNalFpSUdacGJHdzlJaU5HUmprelF6a2lMejRLSUNBOGRHVjRkQ0I0UFNJeE1pSWdlVDBpTVRVaUlHWnBiR3c5SWlOeklpQm1iMjUwTFdaaGJXbHNlVDBpYkc5bmFXTnZaU3c4TDNSbGVIUStDaUE4TDNOMlp6NEsiLCJzaXplcyI6IjI0eDI0IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19">
+</head>
+""", unsafe_allow_html=True)
 
 # Initialize session state
 if 'sensor_data' not in st.session_state:
@@ -446,6 +460,9 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
 
 def check_password():
     """Check if the user has entered the correct password"""
+    # Force title update for mobile app name
+    st.markdown('<script>document.title = "Sensor Data";</script>', unsafe_allow_html=True)
+    
     if 'password_correct' not in st.session_state:
         st.session_state.password_correct = False
     
