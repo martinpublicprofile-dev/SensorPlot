@@ -194,7 +194,8 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
         paper_bgcolor='white',
         margin=dict(l=0, r=0, t=20, b=0),
         height=600,
-        hovermode='x unified'
+        hovermode='x unified',
+        annotations=[]
     )
 
     # Update x-axis with day separators
@@ -336,7 +337,8 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
         hovermode='x unified',
         barmode='group',
         bargap=0.1,
-        bargroupgap=0.1
+        bargroupgap=0.1,
+        annotations=[]
     )
 
     # Update x-axis with day separators
