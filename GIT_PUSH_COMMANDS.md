@@ -2,6 +2,7 @@
 
 ## Recent Updates Added
 
+✅ **Daily Time Range Slider** - Updated slider to move in daily increments only, days start at 0:00  
 ✅ **Mobile App Name Fixed** - Implemented multiple PWA approaches to ensure "Sensor Data" appears on mobile home screen  
 ✅ **Dynamic Manifest Generation** - Proper PWA manifest with embedded icons and correct app metadata  
 ✅ **Password Protection** - Secure access control requiring "sensordata" password  
@@ -25,8 +26,13 @@ rm -f .git/index.lock
 git add .
 
 # Commit the updates
-git commit -m "Fix mobile app name with proper PWA implementation
+git commit -m "Update time range slider to daily increments and fix mobile PWA
 
+- Updated time range slider to move in daily increments only (days start at 0:00)
+- Changed slider step from hourly to daily for cleaner user experience
+- Aligned all datetime calculations to daily boundaries (start: 0:00, end: 23:59:59)
+- Updated display format from HH:mm DD/MM/YY to DD/MM/YY for day-based selection
+- Enhanced persistent state handling to align saved values to daily boundaries
 - Implemented multiple PWA approaches to ensure mobile app installs as 'Sensor Data'
 - Added dynamic manifest generation with embedded SVG icons and proper metadata
 - Enhanced PWA meta tags including application-name and apple-mobile-web-app-title
@@ -35,7 +41,6 @@ git commit -m "Fix mobile app name with proper PWA implementation
 - Added secure password protection requiring 'sensordata' for access
 - Clean login interface with professional design and logout functionality
 - All axis settings (min/max temperature ranges) now persist across refreshes
-- Time range slider selections automatically saved and restored  
 - All checkbox states (temperature/humidity visibility) remembered
 - Time-of-day range settings for averages calculations persist
 - Fixed humidity axis to always show 0-100% scale (no auto-scaling)
@@ -51,12 +56,13 @@ git push origin main
 
 ## What's New
 
-1. **Mobile App Name Fixed**: Implemented comprehensive PWA solution - app now properly installs as "Sensor Data" on Android devices
-2. **PWA Enhancement**: Dynamic manifest generation with custom icons and proper metadata for mobile installation
-3. **Password Protection**: Secure access with "sensordata" password - clean login screen with logout functionality
-4. **Complete UI Persistence**: Every setting (axis ranges, time selections, checkboxes) now persists indefinitely
-5. **Manual Temperature Axis Control**: Set exact min/max values or click "Auto" to reset to automatic scaling
-6. **Fixed Humidity Scale**: Always 0-100%, no more auto-scaling that could confuse readings
-7. **Enhanced User Experience**: All interactions are automatically saved - no more losing settings on refresh
+1. **Daily Time Range Slider**: Slider now moves in daily increments only - cleaner selection with days starting at 0:00
+2. **Mobile App Name Fixed**: Implemented comprehensive PWA solution - app now properly installs as "Sensor Data" on Android devices
+3. **PWA Enhancement**: Dynamic manifest generation with custom icons and proper metadata for mobile installation
+4. **Password Protection**: Secure access with "sensordata" password - clean login screen with logout functionality
+5. **Complete UI Persistence**: Every setting (axis ranges, time selections, checkboxes) now persists indefinitely
+6. **Manual Temperature Axis Control**: Set exact min/max values or click "Auto" to reset to automatic scaling
+7. **Fixed Humidity Scale**: Always 0-100%, no more auto-scaling that could confuse readings
+8. **Enhanced User Experience**: All interactions are automatically saved - no more losing settings on refresh
 
-Your sensor data visualization app now has proper mobile branding with multiple PWA fixes, secure access control, and maintains all user preferences across browser sessions!
+Your sensor data visualization app now has intuitive daily time selection, proper mobile branding with multiple PWA fixes, secure access control, and maintains all user preferences across browser sessions!
