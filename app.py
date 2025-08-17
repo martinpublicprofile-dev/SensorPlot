@@ -189,17 +189,10 @@ def create_dual_axis_chart(data_dict, visible_series, time_range):
     # Update layout for minimalist design
     fig.update_layout(
         title=None,
-        showlegend=True,
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1
-        ),
+        showlegend=False,
         plot_bgcolor='white',
         paper_bgcolor='white',
-        margin=dict(l=0, r=0, t=40, b=0),
+        margin=dict(l=0, r=0, t=20, b=0),
         height=600,
         hovermode='x unified'
     )
@@ -335,17 +328,10 @@ def create_daily_averages_chart(data_dict, visible_series, time_range, time_of_d
     # Update layout for minimalist design
     fig.update_layout(
         title=None,
-        showlegend=True,
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1
-        ),
+        showlegend=False,
         plot_bgcolor='white',
         paper_bgcolor='white',
-        margin=dict(l=0, r=0, t=40, b=0),
+        margin=dict(l=0, r=0, t=20, b=0),
         height=400,
         hovermode='x unified',
         barmode='group',
@@ -427,7 +413,7 @@ def main():
         for i in range(1, 5):
             # Check if this sensor has loaded data
             has_data = i in st.session_state.sensor_data
-            data_status = f" ✅ ({len(st.session_state.sensor_data[i])} records)" if has_data else ""
+            data_status = f" ({len(st.session_state.sensor_data[i])} records)" if has_data else ""
             
             # Sensor name input as subheader - use saved name if available
             default_name = st.session_state.sensor_names.get(i, f"Sensor {i}")
